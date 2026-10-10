@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Logs
 logs
 *.log
@@ -38,3 +39,29 @@ __pycache__/
 *.pyc
 data/*.db
 >>>>>>> 312f24f24f3e65809b935ac2c1eb83948f17bd73
+=======
+
+# Local data and generated ML artefacts
+data/
+datasets/
+artifacts/
+models/
+*.csv
+*.tsv
+*.parquet
+*.arrow
+*.feather
+*.xlsx
+*.xls
+*.zip
+*.joblib
+*.pkl
+*.pickle
+*.sqlite
+*.sqlite3
+*.db
+__pycache__/
+*.py[cod]
+.env
+.venv/
+>>>>>>> a975fdcd5182a9b27d498add530ccde9cc6d55b2
