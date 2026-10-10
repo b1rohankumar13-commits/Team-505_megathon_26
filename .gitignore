@@ -1,0 +1,24 @@
+
+# Local data and generated ML artefacts
+data/
+datasets/
+artifacts/
+models/
+*.csv
+*.tsv
+*.parquet
+*.arrow
+*.feather
+*.xlsx
+*.xls
+*.zip
+*.joblib
+*.pkl
+*.pickle
+*.sqlite
+*.sqlite3
+*.db
+__pycache__/
+*.py[cod]
+.env
+.venv/
