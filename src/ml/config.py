@@ -3,13 +3,23 @@
 # Aligned to Lloyds PS1 spec (ml_layer_spec.md) + architecture doc.
 # All paths, dates, product IDs, vocab and hyperparameters live here.
 
+import os
+from calendar import monthrange
+from datetime import date
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
-DATA_DIR = Path("./data")
-ARTIFACT_DIR = Path("./artifacts")
+# Deployment location: <repository>/src/ml/config.py. Independent of shell CWD.
+REPO_ROOT = Path(__file__).resolve().parents[2]
+_data_override = os.environ.get("GREEN_INSIGHTS_DATA_DIR", "").strip()
+DATA_DIR = Path(_data_override).expanduser() if _data_override else REPO_ROOT / "data" / "prepared"
+if not DATA_DIR.is_absolute():
+    DATA_DIR = REPO_ROOT / DATA_DIR
+DATA_DIR = DATA_DIR.resolve()
+ARTIFACT_DIR = REPO_ROOT / "artifacts"
+# Kept for compatibility: current trainers call joblib.dump without mkdir.
 ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
 
 # Cleaning / acquisition artefacts referenced by the architecture doc
@@ -29,13 +39,17 @@ LABELS_TAKEUP_CSV = DATA_DIR / "labels_takeup.csv"
 # ---------------------------------------------------------------------------
 # Temporal split (no leakage)
 # ---------------------------------------------------------------------------
-# PS1 requires all features use data up to the cutoff; take-up is measured
-# in a fixed window AFTER it. The architecture doc proposes 30 June 2026 with
-# a simulated 90-day outcome window; ml_layer_spec proposes 6 months.
-# Keep the PS-faithful cutoff; make the window explicit and configurable.
-CUTOFF_DATE = "2026-06-30"
+# Team-selected cutoff; PS1 requires a declared cutoff, not this specific date.
+# Features end here. Labels cover the following six calendar months.
+CUTOFF_DATE = "2025-12-31"
 LABEL_WINDOW_MONTHS = 6          # ml_layer_spec §4 (state the window used)
-LABEL_WINDOW_DAYS = 180          # explicit alternative if a 180-day window is needed
+_cutoff = date.fromisoformat(CUTOFF_DATE)
+_end_month_index = _cutoff.year * 12 + _cutoff.month - 1 + LABEL_WINDOW_MONTHS
+_end_year, _end_month_zero = divmod(_end_month_index, 12)
+_end_month = _end_month_zero + 1
+_window_end = date(_end_year, _end_month, min(_cutoff.day, monthrange(_end_year, _end_month)[1]))
+LABEL_WINDOW_END_DATE = _window_end.isoformat()
+LABEL_WINDOW_DAYS = (_window_end - _cutoff).days  # 181; derived, not a second window definition
 
 # Customer-level split (seed 42) -> 70 / 15 / 15
 SPLIT_SEED = 42
@@ -60,8 +74,8 @@ TXN_CATEGORIES = [
 # Merchant boundary policies the spec asks us to *document*, not just apply.
 # These are decision records (Fuel vs Automotive at petrol stations, etc.).
 BOUNDARY_POLICIES = {
-    "fuel_vs_automotive": "Petrol-station shop purchases -> Fuel unless merchant is a pure auto-parts retailer.",
-    "electricity_gas_vs_utilities": "Combined energy bills -> Electricity (primary) unless explicitly gas-only.",
+    "fuel_vs_automotive": "Use Fuel with explicit fuel-purchase evidence; auto-parts/service -> Automotive; ambiguous petrol-station shop purchases -> Other.",
+    "electricity_gas_vs_utilities": "Electricity-only -> Electricity; gas-only -> Gas; combined electricity/gas bills -> Utilities unless separable line items exist.",
     "home_improvement_overlap": "Solar/green-home merchants -> Home Improvement only when not categorised as Utilities.",
     "utilities_bundled": "Water/broadband/bundled bills -> Utilities.",
     "default": "Anything unresolved -> Other.",
@@ -117,7 +131,6 @@ LOGREG_PARAMS = dict(
     C=4.0,
     max_iter=2000,
     class_weight="balanced",
-    n_jobs=-1,
 )
 
 LINEARSVC_PARAMS = dict(
@@ -140,7 +153,9 @@ XGB_PARAMS = dict(
 )
 
 # ---------------------------------------------------------------------------
-# Confidence blend (Task 3). Weights are our choice; document the formula.
+# Proposed heuristic confidence weights; not implemented by current modules.
+# Not a probability of correctness or evidence of calibration. Do not claim
+# these weights are applied until a separately validated implementation exists.
 # ---------------------------------------------------------------------------
 CONFIDENCE_BLEND = dict(
     ensemble_spread=0.25,
@@ -176,3 +191,5 @@ TEST_PREDICTIONS_CSV = ARTIFACT_DIR / "test_predictions.csv"
 # Reproducibility
 # ---------------------------------------------------------------------------
 RANDOM_STATE = 42
+# Do not add random_state to LOGREG_PARAMS / LINEARSVC_PARAMS: categoriser.py
+# already passes it explicitly. propensity.py inserts it into a copy of XGB_PARAMS.
