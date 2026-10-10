@@ -14,16 +14,17 @@ from pathlib import Path
 # Deployment location: <repository>/src/ml/config.py. Independent of shell CWD.
 REPO_ROOT = Path(__file__).resolve().parents[2]
 _data_override = os.environ.get("GREEN_INSIGHTS_DATA_DIR", "").strip()
-DATA_DIR = Path(_data_override).expanduser() if _data_override else REPO_ROOT / "data" / "prepared"
+DATA_DIR = Path(_data_override).expanduser() if _data_override else REPO_ROOT / "data"
 if not DATA_DIR.is_absolute():
     DATA_DIR = REPO_ROOT / DATA_DIR
 DATA_DIR = DATA_DIR.resolve()
 ARTIFACT_DIR = REPO_ROOT / "artifacts"
+RESULTS_DIR = REPO_ROOT / "results"
 # Kept for compatibility: current trainers call joblib.dump without mkdir.
 ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
 
 # Cleaning / acquisition artefacts referenced by the architecture doc
-CLEANING_REPORT = ARTIFACT_DIR / "cleaning_report.json"
+CLEANING_REPORT = RESULTS_DIR / "cleaning_report.json"
 SOURCE_REGISTRY = DATA_DIR / "source_registry.csv"
 GAP_REGISTER = DATA_DIR / "gap_register.csv"
 
@@ -185,7 +186,7 @@ OUTPUT_FIELDS = [
 ]
 
 ELIGIBILITY_STATUS = "not_assessed"   # ml_layer_spec §8 (eligibility is rules-layer)
-TEST_PREDICTIONS_CSV = ARTIFACT_DIR / "test_predictions.csv"
+TEST_PREDICTIONS_CSV = RESULTS_DIR / "test_predictions.csv"
 
 # ---------------------------------------------------------------------------
 # Reproducibility

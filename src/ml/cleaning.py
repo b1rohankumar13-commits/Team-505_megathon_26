@@ -189,8 +189,7 @@ def _robust_fit(X, y, seed, min_n=MIN_FIT_ROWS):
                              max_trials=500, random_state=seed).fit(X, y)
         return r1, thr
     except ValueError as err:  # "could not find a valid consensus set"
-        warnings.warn(f"RANSAC skipped: {err}")
-        return None, None
+        raise RuntimeError("RANSAC failed to find a valid consensus") from err
 
 
 def _month_number(s: pd.Series) -> pd.Series:

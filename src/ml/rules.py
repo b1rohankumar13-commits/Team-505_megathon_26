@@ -43,6 +43,16 @@ def apply_exclusions(customer_id: str, product_id: str, propensity: float,
         if _is(feats_row, "home_owner", 0):
             reason = "NON_HOMEOWNER"
 
+    if reason is None and _is(feats_row, f"holds_{product_id.lower()}", 1):
+        reason = "EXISTING_PRODUCT"
+    required = {
+        "GP01": ["vehicle_annual_mileage_mean", "spend_12m_fuel"],
+        "GP02": ["home_owner", "elec_kwh_mean", "gas_kwh_mean"],
+        "GP03": ["home_owner", "elec_kwh_mean"],
+        "GP04": ["dig_paper_last3m", "dig_digital_last3m", "digital_usage"],
+    }
+    if reason is None and any(pd.isna(feats_row.get(c, np.nan)) for c in required[product_id]):
+        reason = "INSUFFICIENT_DATA"
     if reason is not None:
         return None, reason
     return propensity, None

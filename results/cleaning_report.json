@@ -1,0 +1,21 @@
+{
+  "customers_duplicate_ids_removed": 0,
+  "customers_invalid_age_set_nan": 0,
+  "transactions_duplicates_removed": 0,
+  "transactions_orphan_rows_removed": 0,
+  "transactions_bad_date_or_amount_removed": 0,
+  "transactions_negative_amount_made_positive": 0,
+  "transactions_invalid_debit_credit_removed": 0,
+  "vehicles_orphan_rows_removed": 0,
+  "vehicles_invalid_mileage_set_nan": 0,
+  "vehicles_invalid_age_set_nan": 0,
+  "energy_orphan_rows_removed": 0,
+  "energy_invalid_electricity_kwh_set_nan": 0,
+  "energy_invalid_gas_kwh_set_nan": 0,
+  "digital_orphan_rows_removed": 0,
+  "digital_negative_digital_statements_set_nan": 0,
+  "digital_negative_paper_statements_set_nan": 0,
+  "digital_negative_digital_transactions_set_nan": 0,
+  "digital_negative_branch_visits_set_nan": 0,
+  "products_orphan_rows_removed": 0
+}

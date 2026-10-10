@@ -1,0 +1,294 @@
+{
+  "metrics": {
+    "GP01": {
+      "all_train": {
+        "xgb": {
+          "pr_auc": 0.6003371256414656,
+          "roc_auc": 0.8243454911613337,
+          "brier": 0.15361828989399195,
+          "lift_top10": 2.1951219512195124,
+          "precision_at_k": 0.6,
+          "k": 15,
+          "customers": 150,
+          "positive": 41
+        },
+        "logreg": {
+          "pr_auc": 0.5342750211991159,
+          "roc_auc": 0.8053255761915418,
+          "brier": 0.1671100689957057,
+          "lift_top10": 1.707317073170732,
+          "precision_at_k": 0.4666666666666667,
+          "k": 15,
+          "customers": 150,
+          "positive": 41
+        },
+        "rule": {
+          "pr_auc": 0.49597956977312696,
+          "roc_auc": 0.7673976281047215,
+          "brier": 0.2005273743008285,
+          "lift_top10": 1.707317073170732,
+          "precision_at_k": 0.4666666666666667,
+          "k": 15,
+          "customers": 150,
+          "positive": 41
+        }
+      },
+      "inliers_only": {
+        "xgb": {
+          "pr_auc": 0.6020136455559084,
+          "roc_auc": 0.8306108749160885,
+          "brier": 0.15062972228694496,
+          "lift_top10": 2.682926829268293,
+          "precision_at_k": 0.7333333333333333,
+          "k": 15,
+          "customers": 150,
+          "positive": 41
+        },
+        "logreg": {
+          "pr_auc": 0.526102093255233,
+          "roc_auc": 0.8062206310136495,
+          "brier": 0.1681745510698734,
+          "lift_top10": 1.9512195121951221,
+          "precision_at_k": 0.5333333333333333,
+          "k": 15,
+          "customers": 150,
+          "positive": 41
+        },
+        "rule": {
+          "pr_auc": 0.4955044351516509,
+          "roc_auc": 0.7671738643991945,
+          "brier": 0.20099912922216917,
+          "lift_top10": 1.707317073170732,
+          "precision_at_k": 0.4666666666666667,
+          "k": 15,
+          "customers": 150,
+          "positive": 41
+        }
+      }
+    },
+    "GP02": {
+      "all_train": {
+        "xgb": {
+          "pr_auc": 0.4321472872221136,
+          "roc_auc": 0.8064630681818181,
+          "brier": 0.10633210208162555,
+          "lift_top10": 3.6363636363636362,
+          "precision_at_k": 0.5333333333333333,
+          "k": 15,
+          "customers": 150,
+          "positive": 22
+        },
+        "logreg": {
+          "pr_auc": 0.3852085323643276,
+          "roc_auc": 0.7816051136363636,
+          "brier": 0.16343982936435553,
+          "lift_top10": 2.2727272727272725,
+          "precision_at_k": 0.3333333333333333,
+          "k": 15,
+          "customers": 150,
+          "positive": 22
+        },
+        "rule": {
+          "pr_auc": 0.3221397285536577,
+          "roc_auc": 0.7487571022727273,
+          "brier": 0.29751097357035555,
+          "lift_top10": 1.8181818181818181,
+          "precision_at_k": 0.26666666666666666,
+          "k": 15,
+          "customers": 150,
+          "positive": 22
+        }
+      },
+      "inliers_only": {
+        "xgb": {
+          "pr_auc": 0.37015052788203856,
+          "roc_auc": 0.8153409090909092,
+          "brier": 0.10986096997552106,
+          "lift_top10": 1.8181818181818181,
+          "precision_at_k": 0.26666666666666666,
+          "k": 15,
+          "customers": 150,
+          "positive": 22
+        },
+        "logreg": {
+          "pr_auc": 0.3836800763918842,
+          "roc_auc": 0.7745028409090908,
+          "brier": 0.16511891690541775,
+          "lift_top10": 2.2727272727272725,
+          "precision_at_k": 0.3333333333333333,
+          "k": 15,
+          "customers": 150,
+          "positive": 22
+        },
+        "rule": {
+          "pr_auc": 0.3221397285536577,
+          "roc_auc": 0.7487571022727273,
+          "brier": 0.29762510951641863,
+          "lift_top10": 1.8181818181818181,
+          "precision_at_k": 0.26666666666666666,
+          "k": 15,
+          "customers": 150,
+          "positive": 22
+        }
+      }
+    },
+    "GP03": {
+      "all_train": {
+        "xgb": {
+          "pr_auc": 0.22203751065643648,
+          "roc_auc": 0.7742857142857144,
+          "brier": 0.058872837496163975,
+          "lift_top10": 3.0,
+          "precision_at_k": 0.2,
+          "k": 15,
+          "customers": 150,
+          "positive": 10
+        },
+        "logreg": {
+          "pr_auc": 0.22955575604942996,
+          "roc_auc": 0.7514285714285714,
+          "brier": 0.16350857116286155,
+          "lift_top10": 2.0,
+          "precision_at_k": 0.13333333333333333,
+          "k": 15,
+          "customers": 150,
+          "positive": 10
+        },
+        "rule": {
+          "pr_auc": 0.1080892457491558,
+          "roc_auc": 0.6621428571428571,
+          "brier": 0.3313821009595174,
+          "lift_top10": 1.0,
+          "precision_at_k": 0.06666666666666667,
+          "k": 15,
+          "customers": 150,
+          "positive": 10
+        }
+      },
+      "inliers_only": {
+        "xgb": {
+          "pr_auc": 0.30259699740018264,
+          "roc_auc": 0.6910714285714286,
+          "brier": 0.06072597333150855,
+          "lift_top10": 3.0,
+          "precision_at_k": 0.2,
+          "k": 15,
+          "customers": 150,
+          "positive": 10
+        },
+        "logreg": {
+          "pr_auc": 0.2293231878736422,
+          "roc_auc": 0.7507142857142857,
+          "brier": 0.16363715576132884,
+          "lift_top10": 2.0,
+          "precision_at_k": 0.13333333333333333,
+          "k": 15,
+          "customers": 150,
+          "positive": 10
+        },
+        "rule": {
+          "pr_auc": 0.1080892457491558,
+          "roc_auc": 0.6621428571428571,
+          "brier": 0.3311672613273467,
+          "lift_top10": 1.0,
+          "precision_at_k": 0.06666666666666667,
+          "k": 15,
+          "customers": 150,
+          "positive": 10
+        }
+      }
+    },
+    "GP04": {
+      "all_train": {
+        "xgb": {
+          "pr_auc": 0.49359561113334083,
+          "roc_auc": 0.8136983136983137,
+          "brier": 0.14281695698619412,
+          "lift_top10": 2.564102564102564,
+          "precision_at_k": 0.6666666666666666,
+          "k": 15,
+          "customers": 150,
+          "positive": 39
+        },
+        "logreg": {
+          "pr_auc": 0.5079738618255976,
+          "roc_auc": 0.7997227997227998,
+          "brier": 0.1851058611172392,
+          "lift_top10": 2.051282051282051,
+          "precision_at_k": 0.5333333333333333,
+          "k": 15,
+          "customers": 150,
+          "positive": 39
+        },
+        "rule": {
+          "pr_auc": 0.3359487846103416,
+          "roc_auc": 0.6881496881496882,
+          "brier": 0.27183688775510206,
+          "lift_top10": 0.7692307692307693,
+          "precision_at_k": 0.2,
+          "k": 15,
+          "customers": 150,
+          "positive": 39
+        }
+      },
+      "inliers_only": {
+        "xgb": {
+          "pr_auc": 0.5624374235588323,
+          "roc_auc": 0.8357588357588357,
+          "brier": 0.1392967188470434,
+          "lift_top10": 2.8205128205128203,
+          "precision_at_k": 0.7333333333333333,
+          "k": 15,
+          "customers": 150,
+          "positive": 39
+        },
+        "logreg": {
+          "pr_auc": 0.4979725857888178,
+          "roc_auc": 0.7983367983367984,
+          "brier": 0.18687633889896466,
+          "lift_top10": 2.051282051282051,
+          "precision_at_k": 0.5333333333333333,
+          "k": 15,
+          "customers": 150,
+          "positive": 39
+        },
+        "rule": {
+          "pr_auc": 0.3359487846103416,
+          "roc_auc": 0.6881496881496882,
+          "brier": 0.27347938857547055,
+          "lift_top10": 0.7692307692307693,
+          "precision_at_k": 0.2,
+          "k": 15,
+          "customers": 150,
+          "positive": 39
+        }
+      }
+    }
+  },
+  "selection": {
+    "GP01": {
+      "selected": "inliers_only",
+      "selection_rule": "validation Pareto dominance",
+      "all_train_n": 700,
+      "inlier_train_n": 695
+    },
+    "GP02": {
+      "selected": "all_train",
+      "selection_rule": "validation dominance or tie",
+      "all_train_n": 700,
+      "inlier_train_n": 695
+    },
+    "GP03": {
+      "selected": "inliers_only",
+      "selection_rule": "validation AP minus Brier trade-off (declared before evaluation)",
+      "all_train_n": 700,
+      "inlier_train_n": 695
+    },
+    "GP04": {
+      "selected": "inliers_only",
+      "selection_rule": "validation Pareto dominance",
+      "all_train_n": 700,
+      "inlier_train_n": 695
+    }
+  }
+}

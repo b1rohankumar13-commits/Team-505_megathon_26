@@ -1,0 +1,281 @@
+--- a/src/ml/cleaning.py
++++ b/src/ml/cleaning.py
+@@ -190,6 +190,5 @@
+         return r1, thr
+     except ValueError as err:  # "could not find a valid consensus set"
+-        warnings.warn(f"RANSAC skipped: {err}")
+-        return None, None
++        raise RuntimeError("RANSAC failed to find a valid consensus") from err
+ 
+ 
+--- a/src/ml/features.py
++++ b/src/ml/features.py
+@@ -127,5 +127,5 @@
+         return s.astype(int)
+     if pd.api.types.is_numeric_dtype(s):
+-        return (s.fillna(0) > 0).astype(int)
++        return (s > 0).astype(float).where(s.notna())
+     return s.astype(str).str.strip().str.lower().isin({"y", "yes", "true", "t", "1"}).astype(int)
+ 
+@@ -139,20 +139,25 @@
+ 
+ 
+-def _customer_demographics(customers: pd.DataFrame) -> pd.DataFrame:
++def _customer_demographics(customers: pd.DataFrame, reference_customers=None) -> pd.DataFrame:
+     # FIX: uses the PS columns (income_band, postcode, sustainability_preference, digital_usage);
+     # the original looked for income / credit_score / employment_status, which do not exist.
+     c = customers.drop_duplicates("customer_id").set_index("customer_id")
++    ref = c if reference_customers is None else reference_customers.set_index("customer_id")
+     out = pd.DataFrame(index=c.index)
+     out["age"] = pd.to_numeric(c["age"], errors="coerce")
+     out["home_owner"] = _to_flag(c["home_owner"])
+     for col in ["income_band", "sustainability_preference", "digital_usage"]:
+-        out = out.join(_encode(c[col], col))
++        encoded = _encode(c[col], col)
++        encoded = encoded.reindex(columns=_encode(ref[col], col).columns)
++        out = out.join(encoded)
+ 
+     # Region proxy: UK postcode area (leading letters). Rare areas are grouped into OTHER.
+     area = c["postcode"].astype("string").str.extract(r"^([A-Za-z]{1,2})")[0].str.upper()
+     area = area.fillna("OTHER")
+-    common = area.value_counts(normalize=True)
++    ref_area = ref["postcode"].astype("string").str.extract(r"^([A-Za-z]{1,2})")[0].str.upper().fillna("OTHER")
++    common = ref_area.value_counts(normalize=True)
+     area = area.where(area.isin(common[common >= 0.02].index), "OTHER")
+-    out = out.join(pd.get_dummies(area, prefix="area").astype(int))
++    area_columns = ["area_" + a for a in sorted(set(common[common >= 0.02].index) | {"OTHER"})]
++    out = out.join(pd.get_dummies(area, prefix="area").reindex(columns=area_columns, fill_value=False).astype(int))
+     return out
+ 
+@@ -200,5 +205,5 @@
+         piv.columns = [f"spend_{w}m_{_slug(c)}" for c in piv.columns]
+         frames.append(piv)
+-    out = pd.concat(frames, axis=1).fillna(0.0)
++    out = pd.concat(frames, axis=1)
+ 
+     # FIX: trend features (last 3 months vs 12-month monthly average)
+@@ -325,10 +330,10 @@
+ def build_customer_360(customers, transactions, vehicles, energy, digital,
+                        products=None, cutoff_date=CUTOFF_DATE,
+-                       mask_flagged_energy=True) -> pd.DataFrame:
++                       mask_flagged_energy=True, reference_customers=None) -> pd.DataFrame:
+     """
+     Assemble the Customer 360 feature matrix (one row per customer).
+ 
+-    Build it ONCE for all customers, then split by customer_id: nothing here is fitted on data,
+-    so there is no leakage, and the columns are identical for train/val/test.
++    Pass reference_customers from TRAIN to freeze demographic categories and rare areas.
++    Other aggregates are calculated within each customer, up to the cutoff.
+     Uses data up to cutoff_date only. NaN means "not available" and is deliberately kept
+     (XGBoost handles it; for Logistic Regression impute inside a Pipeline fitted on train).
+@@ -348,5 +353,5 @@
+     _require(products, "products")
+ 
+-    demo = _customer_demographics(customers)
++    demo = _customer_demographics(customers, reference_customers)
+     holdings = _holdings_features(products, cutoff)
+     txn_agg = _transaction_aggregates(transactions, cutoff)
+@@ -372,10 +377,5 @@
+     feats["completeness_score"] = 1.0 - feats[miss].mean(axis=1)
+ 
+-    # FIX: the original did feats.fillna(0.0) on everything, so "no vehicle" became
+-    # "0 miles/year". Only genuine zeros are filled: spend, counts, holdings.
+-    zero_fill = [c for c in feats.columns
+-                 if c.startswith(("spend_", "trend_", "holds_", "holdings_"))]
+-    zero_fill += ["txn_count", "txn_credit_total"] if "txn_count" in feats.columns else []
+-    feats[zero_fill] = feats[zero_fill].fillna(0.0)
++    # Preserve unavailable feature values for XGBoost.
+ 
+     feats.index.name = "customer_id"
+@@ -384,11 +384,6 @@
+ 
+ def align_columns(feats: pd.DataFrame, columns) -> pd.DataFrame:
+-    """At inference time: reorder to the training columns; missing dummy-like columns become 0."""
+-    out = feats.reindex(columns=columns)
+-    zero_prefixes = ("holds_", "vehicle_fuel_", "spend_", "trend_", "area_",
+-                     "income_band_", "sustainability_preference_", "digital_usage_")
+-    z = [c for c in columns if c.startswith(zero_prefixes)]
+-    out[z] = out[z].fillna(0)
+-    return out
++    """Reorder without imputing missing feature values."""
++    return feats.reindex(columns=columns)
+ 
+ 
+--- a/src/ml/propensity.py
++++ b/src/ml/propensity.py
+@@ -14,4 +14,5 @@
+ from sklearn.pipeline import make_pipeline
+ from sklearn.preprocessing import StandardScaler
++from sklearn.model_selection import StratifiedKFold
+ from sklearn.metrics import (
+     average_precision_score, roc_auc_score, brier_score_loss,
+@@ -38,24 +39,31 @@
+ 
+ 
+-def _rank(s: pd.Series) -> pd.Series:
+-    return s.rank(pct=True).fillna(0.0)
+-
+-
+-def rule_baseline_score(feats: pd.DataFrame, product_id: str) -> np.ndarray:
+-    """Heuristic score in [0,1] from a few attributes (percentile ranks, so unit-free)."""
++def _rank(s: pd.Series, reference: pd.Series) -> pd.Series:
++    ref = np.sort(reference.dropna().to_numpy(dtype=float))
++    if not len(ref):
++        raise ValueError("Rule baseline reference has no observed values")
++    x = s.to_numpy(dtype=float)
++    rank = (np.searchsorted(ref, x, side="left") + np.searchsorted(ref, x, side="right")) / (2 * len(ref))
++    return pd.Series(rank, index=s.index).where(s.notna(), 0.0)
++
++
++def rule_baseline_score(feats: pd.DataFrame, product_id: str, reference: pd.DataFrame) -> np.ndarray:
++    """Heuristic score using a fixed training reference, never prediction-batch ranks."""
++    def rank(col):
++        return _rank(_col(feats, col), _col(reference, col))
+     score = pd.Series(0.0, index=feats.index)
+     owner = _col(feats, "home_owner").fillna(0)
+     if product_id == "GP01":  # EV Finance: high mileage + high fuel spend, not already an EV
+         # FIX: the original gave the HIGHEST score to existing EV owners.
+-        score = 0.5 * _rank(_col(feats, "vehicle_annual_mileage_mean")) \
+-              + 0.5 * _rank(_col(feats, "spend_12m_fuel"))
++        score = 0.5 * rank("vehicle_annual_mileage_mean") \
++              + 0.5 * rank("spend_12m_fuel")
+         score = score * (1 - _col(feats, "vehicle_is_ev").fillna(0))
+     elif product_id == "GP02":  # Green Home Loan
+-        score = owner * (0.5 + 0.25 * _rank(_col(feats, "elec_kwh_mean"))
+-                         + 0.25 * _rank(_col(feats, "gas_kwh_mean")))
++        score = owner * (0.5 + 0.25 * rank("elec_kwh_mean")
++                         + 0.25 * rank("gas_kwh_mean"))
+     elif product_id == "GP03":  # Solar Finance
+-        score = owner * (0.4 + 0.6 * _rank(_col(feats, "elec_kwh_mean")))
++        score = owner * (0.4 + 0.6 * rank("elec_kwh_mean"))
+     elif product_id == "GP04":  # Paperless
+-        score = _rank(_col(feats, "dig_paper_share"))
++        score = rank("dig_paper_share")
+     return np.clip(score.values, 0, 1)
+ 
+@@ -95,5 +103,5 @@
+ # ---------------------------------------------------------------------------
+ def train_product_model(df: pd.DataFrame, product_id: str, splits: dict,
+-                        train_ids=None) -> dict:
++                        train_ids=None, evaluate_test=False) -> dict:
+     """
+     df: customer-level features + label.
+@@ -141,7 +149,8 @@
+ 
+     calibrators = {}
+-    if int(y_tr.sum()) >= 15:
++    if min(int(y_tr.sum()), int((y_tr == 0).sum())) >= 15:
+         for method in ["isotonic", "sigmoid"]:
+-            cal = CalibratedClassifierCV(xgb.XGBClassifier(**cal_params), method=method, cv=3)
++            cv = StratifiedKFold(3, shuffle=True, random_state=RANDOM_STATE)
++            cal = CalibratedClassifierCV(xgb.XGBClassifier(**cal_params), method=method, cv=cv, ensemble=False)
+             cal.fit(X_tr, y_tr)
+             p = cal.predict_proba(X_va)[:, 1]
+@@ -165,7 +174,8 @@
+     lr.fit(X_tr, y_tr)
+     lr_va = lr.predict_proba(X_va)[:, 1]
+-    rule_va = rule_baseline_score(va, product_id)
++    rule_va = rule_baseline_score(va, product_id, tr)
+ 
+     final_va = cal_model.predict_proba(X_va)[:, 1] if use_calibrated else raw_va
++    final_va = np.clip(final_va, 0.001, 0.999)
+     metrics = {
+         "xgb": _metrics(y_va, final_va),
+@@ -174,21 +184,24 @@
+     }
+ 
+-    # --- Test metrics (every test customer, nothing filtered) ---
+-    final_te = (cal_model.predict_proba(X_te)[:, 1] if use_calibrated
+-                else model.predict_proba(X_te)[:, 1])
+-    test_metrics = {
+-        "xgb": _metrics(y_te, final_te),
+-        "logreg": _metrics(y_te, lr.predict_proba(X_te)[:, 1]),
+-        "rule": _metrics(y_te, rule_baseline_score(te, product_id)),
+-    }
+-    try:
++    # Test evaluation is disabled during selection and reproducibility runs.
++    test_metrics, calib_curve = None, None
++    if evaluate_test:
++        final_te = np.clip(cal_model.predict_proba(X_te)[:, 1] if use_calibrated
++                           else model.predict_proba(X_te)[:, 1], 0.001, 0.999)
++        test_metrics = {
++            "xgb": _metrics(y_te, final_te),
++            "logreg": _metrics(y_te, lr.predict_proba(X_te)[:, 1]),
++            "rule": _metrics(y_te, rule_baseline_score(te, product_id, tr)),
++        }
+         frac_pos, mean_pred = calibration_curve(y_te, final_te, n_bins=10, strategy="quantile")
+         calib_curve = {"mean_predicted": mean_pred, "fraction_positive": frac_pos}
+-    except ValueError:
+-        calib_curve = None
+ 
+     artifact = {
+         "product_id": product_id,
+         "model": model,
++        "logreg": lr,
++        "rule_reference": tr[feats].copy(),
++        "calibration_method": best_method if use_calibrated else "raw",
++        "calibration_brier": {"raw": brier_raw, **{m: float(v[1]) for m, v in calibrators.items()}},
+         "calibrator": cal_model if use_calibrated else None,
+         "use_calibrated": use_calibrated,
+--- a/src/ml/rules.py
++++ b/src/ml/rules.py
+@@ -44,4 +44,14 @@
+             reason = "NON_HOMEOWNER"
+ 
++    if reason is None and _is(feats_row, f"holds_{product_id.lower()}", 1):
++        reason = "EXISTING_PRODUCT"
++    required = {
++        "GP01": ["vehicle_annual_mileage_mean", "spend_12m_fuel"],
++        "GP02": ["home_owner", "elec_kwh_mean", "gas_kwh_mean"],
++        "GP03": ["home_owner", "elec_kwh_mean"],
++        "GP04": ["dig_paper_last3m", "dig_digital_last3m", "digital_usage"],
++    }
++    if reason is None and any(pd.isna(feats_row.get(c, np.nan)) for c in required[product_id]):
++        reason = "INSUFFICIENT_DATA"
+     if reason is not None:
+         return None, reason
+--- a/src/ml/config.py
++++ b/src/ml/config.py
+@@ -15,14 +15,15 @@
+ REPO_ROOT = Path(__file__).resolve().parents[2]
+ _data_override = os.environ.get("GREEN_INSIGHTS_DATA_DIR", "").strip()
+-DATA_DIR = Path(_data_override).expanduser() if _data_override else REPO_ROOT / "data" / "prepared"
++DATA_DIR = Path(_data_override).expanduser() if _data_override else REPO_ROOT / "data"
+ if not DATA_DIR.is_absolute():
+     DATA_DIR = REPO_ROOT / DATA_DIR
+ DATA_DIR = DATA_DIR.resolve()
+ ARTIFACT_DIR = REPO_ROOT / "artifacts"
++RESULTS_DIR = REPO_ROOT / "results"
+ # Kept for compatibility: current trainers call joblib.dump without mkdir.
+ ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
+ 
+ # Cleaning / acquisition artefacts referenced by the architecture doc
+-CLEANING_REPORT = ARTIFACT_DIR / "cleaning_report.json"
++CLEANING_REPORT = RESULTS_DIR / "cleaning_report.json"
+ SOURCE_REGISTRY = DATA_DIR / "source_registry.csv"
+ GAP_REGISTER = DATA_DIR / "gap_register.csv"
+@@ -186,5 +187,5 @@
+ 
+ ELIGIBILITY_STATUS = "not_assessed"   # ml_layer_spec §8 (eligibility is rules-layer)
+-TEST_PREDICTIONS_CSV = ARTIFACT_DIR / "test_predictions.csv"
++TEST_PREDICTIONS_CSV = RESULTS_DIR / "test_predictions.csv"
+ 
+ # ---------------------------------------------------------------------------
+--- a/src/ml/run_all.py
++++ b/src/ml/run_all.py
+@@ -1,6 +1,6 @@
+-"""Lloyds ML orchestration. Apply required_fixes.patch to the supplied modules.
++"""Lloyds ML orchestration. Required compatibility fixes are already applied in this project.
+ 
+ Run from the project root: python run_all.py
+-Requires the next two delivery files, explain.py and predict.py.
++Uses the sibling explain.py and predict.py modules.
+ All choices use validation; final test scoring occurs once after a model lock.
+ No carbon, lending eligibility or generated explanations are produced.
+@@ -52,5 +52,5 @@
+ from propensity import predict_propensity, rule_baseline_score, train_product_model
+ 
+-RESULTS = Path("results")
++RESULTS = Path(cfg.RESULTS_DIR)
+ ARTIFACTS = Path(cfg.ARTIFACT_DIR)
+ RUNTIMES: list[dict] = []

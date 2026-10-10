@@ -1,0 +1,122 @@
+[
+  {
+    "stage": "1/load and clean",
+    "seconds": 0.4826873999554664,
+    "success": true
+  },
+  {
+    "stage": "2/shared stratified customer split",
+    "seconds": 0.0354075999930501,
+    "success": true
+  },
+  {
+    "stage": "3/train-only energy RANSAC flags",
+    "seconds": 0.04047800018452108,
+    "success": true
+  },
+  {
+    "stage": "4/categoriser training and validation",
+    "seconds": 87.15786290005781,
+    "success": true
+  },
+  {
+    "stage": "5/OOF categories, Customer 360 and customer RANSAC",
+    "seconds": 17.518879799870774,
+    "success": true
+  },
+  {
+    "stage": "6/ablation/GP01/all_train",
+    "seconds": 4.2540481998585165,
+    "success": true
+  },
+  {
+    "stage": "6/ablation/GP01/inliers_only",
+    "seconds": 1.0705798000562936,
+    "success": true
+  },
+  {
+    "stage": "6/ablation/GP02/all_train",
+    "seconds": 1.2272271998226643,
+    "success": true
+  },
+  {
+    "stage": "6/ablation/GP02/inliers_only",
+    "seconds": 1.142081999918446,
+    "success": true
+  },
+  {
+    "stage": "6/ablation/GP03/all_train",
+    "seconds": 1.9040380998048931,
+    "success": true
+  },
+  {
+    "stage": "6/ablation/GP03/inliers_only",
+    "seconds": 0.47665830003097653,
+    "success": true
+  },
+  {
+    "stage": "6/ablation/GP04/all_train",
+    "seconds": 2.3429603001568466,
+    "success": true
+  },
+  {
+    "stage": "6/ablation/GP04/inliers_only",
+    "seconds": 0.4246249001007527,
+    "success": true
+  },
+  {
+    "stage": "6/propensity ablation on validation",
+    "seconds": 13.084972999989986,
+    "success": true
+  },
+  {
+    "stage": "6/reproducibility/GP01/all_train",
+    "seconds": 4.313626500079408,
+    "success": true
+  },
+  {
+    "stage": "6/reproducibility/GP01/inliers_only",
+    "seconds": 1.056135700084269,
+    "success": true
+  },
+  {
+    "stage": "6/reproducibility/GP02/all_train",
+    "seconds": 1.214295200072229,
+    "success": true
+  },
+  {
+    "stage": "6/reproducibility/GP02/inliers_only",
+    "seconds": 1.153473800048232,
+    "success": true
+  },
+  {
+    "stage": "6/reproducibility/GP03/all_train",
+    "seconds": 1.918640200048685,
+    "success": true
+  },
+  {
+    "stage": "6/reproducibility/GP03/inliers_only",
+    "seconds": 0.46447240002453327,
+    "success": true
+  },
+  {
+    "stage": "6/reproducibility/GP04/all_train",
+    "seconds": 2.3146875000093132,
+    "success": true
+  },
+  {
+    "stage": "6/reproducibility/GP04/inliers_only",
+    "seconds": 0.4275386000517756,
+    "success": true
+  },
+  {
+    "stage": "11/reproduce steps 5\u20136 before opening TEST",
+    "seconds": 30.55033060000278,
+    "success": true
+  },
+  {
+    "stage": "7\u20138/GP01/confidence, thresholds and reason checks",
+    "seconds": 0.5440609999932349,
+    "success": false
+  }
+]
