@@ -1,11 +1,17 @@
 """Validation-selected confidence and data-supported TreeSHAP reason codes.
 
-For each candidate signal S, confidence = D * (0.8 + 0.2*S), where D
+For each candidate signal S, confidence = D**3 * S, where D
 is observed coverage of transaction, vehicle, energy and digital blocks.
+The fixed cubic coverage penalty replaces the previous 80% confidence floor.
+It is an engineering constraint checked on the training-derived missing-data
+scenarios; the four signals are still selected by validation metrics only.
+This does not guarantee monotonic confidence for every possible changed profile.
+This revision was developed using validation results and training-derived
+scenarios, so its validation scores are selection estimates, not an independent test.
+
 S is ensemble agreement, probability certainty, completeness, or the
-configured weighted blend. The fixed completeness gate makes a missing
-whole block score below a fully observed profile, even if its prediction
-becomes more extreme. It is a heuristic, not a correctness probability.
+configured weighted blend. Completeness reduces confidence for a fixed model signal;
+changes to input features can also change the model signal. It is a heuristic, not a correctness probability.
 
 Select the eligible candidate with largest validation Spearman correlation
 with -abs(y-p), breaking ties by high-tercile Brier and method name.
@@ -129,13 +135,13 @@ def _signals(explanation, frame, probabilities):
 def confidence_scores(explanation, frame, probabilities):
     _require(explanation["validated"], "Confidence selection did not pass validation")
     signals, completeness = _signals(explanation, frame, probabilities)
-    return np.clip(completeness * (0.8 + 0.2 * signals[explanation["method"]]), 0, 1)
+    return np.clip(completeness**3 * signals[explanation["method"]], 0, 1)
 
 
 def _comparison(y, p, signals, completeness):
     rows = []
     for method in METHODS:
-        confidence = completeness * (0.8 + 0.2 * signals[method])
+        confidence = completeness**3 * signals[method]
         # Rank correlation without splitting equal confidence values arbitrarily.
         a = pd.Series(confidence).rank(method="average")
         b = pd.Series(-np.abs(y-p)).rank(method="average")
@@ -265,7 +271,7 @@ def fit_explainer(*, product_id, artifact, train_features, train_y,
         comparison["selected"] = comparison.method.eq(explanation["method"])
         explanation["comparison"] = comparison
         explanation["formula"] = (
-            f"C = D * (0.8 + 0.2*S); selected S={explanation['method']}. "
+            f"C = D**3 * S; selected S={explanation['method']}. "
             "D=mean observed coverage of four data blocks; ensemble agreement=1-2*std(seed probabilities); "
             "certainty=1-binary_entropy(p)/log(2); margin=abs(2*p-1); "
             f"blend weights={dict(blend)}. Percentiles use training customers only. "

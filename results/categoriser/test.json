@@ -1,0 +1,302 @@
+[
+  {
+    "partition": "test",
+    "model": "ml_only",
+    "macro_f1": 1.0,
+    "accuracy": 1.0,
+    "unseen_merchants_rows": 0,
+    "unseen_merchant_accuracy": null,
+    "per_class": [
+      {
+        "category": "Fuel",
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 1380
+      },
+      {
+        "category": "Electricity",
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 1800
+      },
+      {
+        "category": "Gas",
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 1800
+      },
+      {
+        "category": "Public Transport",
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 1800
+      },
+      {
+        "category": "Home Improvement",
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 243
+      },
+      {
+        "category": "Automotive",
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 298
+      },
+      {
+        "category": "Utilities",
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 1800
+      },
+      {
+        "category": "Other",
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 3600
+      }
+    ],
+    "boundary_confusions": [
+      {
+        "actual": "Fuel",
+        "predicted": "Automotive",
+        "errors": 0
+      },
+      {
+        "actual": "Automotive",
+        "predicted": "Fuel",
+        "errors": 0
+      },
+      {
+        "actual": "Electricity",
+        "predicted": "Utilities",
+        "errors": 0
+      },
+      {
+        "actual": "Utilities",
+        "predicted": "Electricity",
+        "errors": 0
+      },
+      {
+        "actual": "Gas",
+        "predicted": "Utilities",
+        "errors": 0
+      },
+      {
+        "actual": "Utilities",
+        "predicted": "Gas",
+        "errors": 0
+      }
+    ],
+    "errors_saved": 0,
+    "confusion_png": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\results\\categoriser\\test\\ml_only\\confusion.png"
+  },
+  {
+    "partition": "test",
+    "model": "hybrid",
+    "macro_f1": 0.9563690679744223,
+    "accuracy": 0.9564499646254225,
+    "unseen_merchants_rows": 0,
+    "unseen_merchant_accuracy": null,
+    "per_class": [
+      {
+        "category": "Fuel",
+        "precision": 0.7135470527404343,
+        "recall": 1.0,
+        "f1": 0.8328304164152082,
+        "support": 1380
+      },
+      {
+        "category": "Electricity",
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 1800
+      },
+      {
+        "category": "Gas",
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 1800
+      },
+      {
+        "category": "Public Transport",
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 1800
+      },
+      {
+        "category": "Home Improvement",
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 243
+      },
+      {
+        "category": "Automotive",
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 298
+      },
+      {
+        "category": "Utilities",
+        "precision": 1.0,
+        "recall": 0.6922222222222222,
+        "f1": 0.8181221273801708,
+        "support": 1800
+      },
+      {
+        "category": "Other",
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 3600
+      }
+    ],
+    "boundary_confusions": [
+      {
+        "actual": "Fuel",
+        "predicted": "Automotive",
+        "errors": 0
+      },
+      {
+        "actual": "Automotive",
+        "predicted": "Fuel",
+        "errors": 0
+      },
+      {
+        "actual": "Electricity",
+        "predicted": "Utilities",
+        "errors": 0
+      },
+      {
+        "actual": "Utilities",
+        "predicted": "Electricity",
+        "errors": 0
+      },
+      {
+        "actual": "Gas",
+        "predicted": "Utilities",
+        "errors": 0
+      },
+      {
+        "actual": "Utilities",
+        "predicted": "Gas",
+        "errors": 0
+      }
+    ],
+    "errors_saved": 10,
+    "confusion_png": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\results\\categoriser\\test\\hybrid\\confusion.png"
+  },
+  {
+    "partition": "test",
+    "model": "rules",
+    "macro_f1": 0.536343144082742,
+    "accuracy": 0.6425595472054084,
+    "unseen_merchants_rows": 0,
+    "unseen_merchant_accuracy": null,
+    "per_class": [
+      {
+        "category": "Fuel",
+        "precision": 0.7135470527404343,
+        "recall": 1.0,
+        "f1": 0.8328304164152082,
+        "support": 1380
+      },
+      {
+        "category": "Electricity",
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 1800
+      },
+      {
+        "category": "Gas",
+        "precision": 1.0,
+        "recall": 0.34444444444444444,
+        "f1": 0.512396694214876,
+        "support": 1800
+      },
+      {
+        "category": "Public Transport",
+        "precision": 1.0,
+        "recall": 0.3138888888888889,
+        "f1": 0.47780126849894294,
+        "support": 1800
+      },
+      {
+        "category": "Home Improvement",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 243
+      },
+      {
+        "category": "Automotive",
+        "precision": 1.0,
+        "recall": 0.7013422818791947,
+        "f1": 0.8244575936883629,
+        "support": 298
+      },
+      {
+        "category": "Utilities",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1800
+      },
+      {
+        "category": "Other",
+        "precision": 0.4741209008297116,
+        "recall": 1.0,
+        "f1": 0.6432591798445457,
+        "support": 3600
+      }
+    ],
+    "boundary_confusions": [
+      {
+        "actual": "Fuel",
+        "predicted": "Automotive",
+        "errors": 0
+      },
+      {
+        "actual": "Automotive",
+        "predicted": "Fuel",
+        "errors": 0
+      },
+      {
+        "actual": "Electricity",
+        "predicted": "Utilities",
+        "errors": 0
+      },
+      {
+        "actual": "Utilities",
+        "predicted": "Electricity",
+        "errors": 0
+      },
+      {
+        "actual": "Gas",
+        "predicted": "Utilities",
+        "errors": 0
+      },
+      {
+        "actual": "Utilities",
+        "predicted": "Gas",
+        "errors": 0
+      }
+    ],
+    "errors_saved": 10,
+    "confusion_png": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\results\\categoriser\\test\\rules\\confusion.png"
+  }
+]
