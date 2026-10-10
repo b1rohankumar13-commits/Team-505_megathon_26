@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Logs
 logs
 *.log
@@ -30,3 +31,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+=======
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+data/*.db
+>>>>>>> 312f24f24f3e65809b935ac2c1eb83948f17bd73
