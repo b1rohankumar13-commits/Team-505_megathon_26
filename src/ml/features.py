@@ -126,7 +126,7 @@ def _to_flag(s: pd.Series) -> pd.Series:
     if s.dtype == bool:
         return s.astype(int)
     if pd.api.types.is_numeric_dtype(s):
-        return (s.fillna(0) > 0).astype(int)
+        return (s > 0).astype(float).where(s.notna())
     return s.astype(str).str.strip().str.lower().isin({"y", "yes", "true", "t", "1"}).astype(int)
 
 
@@ -138,22 +138,27 @@ def _encode(s: pd.Series, name: str) -> pd.DataFrame:
     return pd.get_dummies(cleaned, prefix=name).astype(int)
 
 
-def _customer_demographics(customers: pd.DataFrame) -> pd.DataFrame:
+def _customer_demographics(customers: pd.DataFrame, reference_customers=None) -> pd.DataFrame:
     # FIX: uses the PS columns (income_band, postcode, sustainability_preference, digital_usage);
     # the original looked for income / credit_score / employment_status, which do not exist.
     c = customers.drop_duplicates("customer_id").set_index("customer_id")
+    ref = c if reference_customers is None else reference_customers.set_index("customer_id")
     out = pd.DataFrame(index=c.index)
     out["age"] = pd.to_numeric(c["age"], errors="coerce")
     out["home_owner"] = _to_flag(c["home_owner"])
     for col in ["income_band", "sustainability_preference", "digital_usage"]:
-        out = out.join(_encode(c[col], col))
+        encoded = _encode(c[col], col)
+        encoded = encoded.reindex(columns=_encode(ref[col], col).columns)
+        out = out.join(encoded)
 
     # Region proxy: UK postcode area (leading letters). Rare areas are grouped into OTHER.
     area = c["postcode"].astype("string").str.extract(r"^([A-Za-z]{1,2})")[0].str.upper()
     area = area.fillna("OTHER")
-    common = area.value_counts(normalize=True)
+    ref_area = ref["postcode"].astype("string").str.extract(r"^([A-Za-z]{1,2})")[0].str.upper().fillna("OTHER")
+    common = ref_area.value_counts(normalize=True)
     area = area.where(area.isin(common[common >= 0.02].index), "OTHER")
-    out = out.join(pd.get_dummies(area, prefix="area").astype(int))
+    area_columns = ["area_" + a for a in sorted(set(common[common >= 0.02].index) | {"OTHER"})]
+    out = out.join(pd.get_dummies(area, prefix="area").reindex(columns=area_columns, fill_value=False).astype(int))
     return out
 
 
@@ -199,7 +204,7 @@ def _spend_by_category(txns: pd.DataFrame, cutoff: pd.Timestamp) -> pd.DataFrame
         piv = piv.reindex(columns=TXN_CATEGORIES, fill_value=0.0)
         piv.columns = [f"spend_{w}m_{_slug(c)}" for c in piv.columns]
         frames.append(piv)
-    out = pd.concat(frames, axis=1).fillna(0.0)
+    out = pd.concat(frames, axis=1)
 
     # FIX: trend features (last 3 months vs 12-month monthly average)
     if 3 in SPEND_WINDOWS and 12 in SPEND_WINDOWS:
@@ -324,12 +329,12 @@ def _digital_features(digital: pd.DataFrame, cutoff: pd.Timestamp) -> pd.DataFra
 # ---------------------------------------------------------------------------
 def build_customer_360(customers, transactions, vehicles, energy, digital,
                        products=None, cutoff_date=CUTOFF_DATE,
-                       mask_flagged_energy=True) -> pd.DataFrame:
+                       mask_flagged_energy=True, reference_customers=None) -> pd.DataFrame:
     """
     Assemble the Customer 360 feature matrix (one row per customer).
 
-    Build it ONCE for all customers, then split by customer_id: nothing here is fitted on data,
-    so there is no leakage, and the columns are identical for train/val/test.
+    Pass reference_customers from TRAIN to freeze demographic categories and rare areas.
+    Other aggregates are calculated within each customer, up to the cutoff.
     Uses data up to cutoff_date only. NaN means "not available" and is deliberately kept
     (XGBoost handles it; for Logistic Regression impute inside a Pipeline fitted on train).
     """
@@ -347,7 +352,7 @@ def build_customer_360(customers, transactions, vehicles, energy, digital,
         raise ValueError("products table is required for holdings features")
     _require(products, "products")
 
-    demo = _customer_demographics(customers)
+    demo = _customer_demographics(customers, reference_customers)
     holdings = _holdings_features(products, cutoff)
     txn_agg = _transaction_aggregates(transactions, cutoff)
     spend = _spend_by_category(transactions, cutoff)
@@ -371,25 +376,15 @@ def build_customer_360(customers, transactions, vehicles, energy, digital,
     miss = [c for c in feats.columns if c.startswith("missing_")]
     feats["completeness_score"] = 1.0 - feats[miss].mean(axis=1)
 
-    # FIX: the original did feats.fillna(0.0) on everything, so "no vehicle" became
-    # "0 miles/year". Only genuine zeros are filled: spend, counts, holdings.
-    zero_fill = [c for c in feats.columns
-                 if c.startswith(("spend_", "trend_", "holds_", "holdings_"))]
-    zero_fill += ["txn_count", "txn_credit_total"] if "txn_count" in feats.columns else []
-    feats[zero_fill] = feats[zero_fill].fillna(0.0)
+    # Preserve unavailable feature values for XGBoost.
 
     feats.index.name = "customer_id"
     return feats.reset_index()
 
 
 def align_columns(feats: pd.DataFrame, columns) -> pd.DataFrame:
-    """At inference time: reorder to the training columns; missing dummy-like columns become 0."""
-    out = feats.reindex(columns=columns)
-    zero_prefixes = ("holds_", "vehicle_fuel_", "spend_", "trend_", "area_",
-                     "income_band_", "sustainability_preference_", "digital_usage_")
-    z = [c for c in columns if c.startswith(zero_prefixes)]
-    out[z] = out[z].fillna(0)
-    return out
+    """Reorder without imputing missing feature values."""
+    return feats.reindex(columns=columns)
 
 
 # ---------------------------------------------------------------------------

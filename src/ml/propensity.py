@@ -13,6 +13,7 @@ from sklearn.calibration import CalibratedClassifierCV, calibration_curve
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import (
     average_precision_score, roc_auc_score, brier_score_loss,
 )
@@ -37,26 +38,33 @@ def _col(feats: pd.DataFrame, name: str) -> pd.Series:
     return pd.Series(np.nan, index=feats.index)
 
 
-def _rank(s: pd.Series) -> pd.Series:
-    return s.rank(pct=True).fillna(0.0)
+def _rank(s: pd.Series, reference: pd.Series) -> pd.Series:
+    ref = np.sort(reference.dropna().to_numpy(dtype=float))
+    if not len(ref):
+        raise ValueError("Rule baseline reference has no observed values")
+    x = s.to_numpy(dtype=float)
+    rank = (np.searchsorted(ref, x, side="left") + np.searchsorted(ref, x, side="right")) / (2 * len(ref))
+    return pd.Series(rank, index=s.index).where(s.notna(), 0.0)
 
 
-def rule_baseline_score(feats: pd.DataFrame, product_id: str) -> np.ndarray:
-    """Heuristic score in [0,1] from a few attributes (percentile ranks, so unit-free)."""
+def rule_baseline_score(feats: pd.DataFrame, product_id: str, reference: pd.DataFrame) -> np.ndarray:
+    """Heuristic score using a fixed training reference, never prediction-batch ranks."""
+    def rank(col):
+        return _rank(_col(feats, col), _col(reference, col))
     score = pd.Series(0.0, index=feats.index)
     owner = _col(feats, "home_owner").fillna(0)
     if product_id == "GP01":  # EV Finance: high mileage + high fuel spend, not already an EV
         # FIX: the original gave the HIGHEST score to existing EV owners.
-        score = 0.5 * _rank(_col(feats, "vehicle_annual_mileage_mean")) \
-              + 0.5 * _rank(_col(feats, "spend_12m_fuel"))
+        score = 0.5 * rank("vehicle_annual_mileage_mean") \
+              + 0.5 * rank("spend_12m_fuel")
         score = score * (1 - _col(feats, "vehicle_is_ev").fillna(0))
     elif product_id == "GP02":  # Green Home Loan
-        score = owner * (0.5 + 0.25 * _rank(_col(feats, "elec_kwh_mean"))
-                         + 0.25 * _rank(_col(feats, "gas_kwh_mean")))
+        score = owner * (0.5 + 0.25 * rank("elec_kwh_mean")
+                         + 0.25 * rank("gas_kwh_mean"))
     elif product_id == "GP03":  # Solar Finance
-        score = owner * (0.4 + 0.6 * _rank(_col(feats, "elec_kwh_mean")))
+        score = owner * (0.4 + 0.6 * rank("elec_kwh_mean"))
     elif product_id == "GP04":  # Paperless
-        score = _rank(_col(feats, "dig_paper_share"))
+        score = rank("dig_paper_share")
     return np.clip(score.values, 0, 1)
 
 
@@ -94,7 +102,7 @@ def _metrics(y, p) -> dict:
 # Train one product model
 # ---------------------------------------------------------------------------
 def train_product_model(df: pd.DataFrame, product_id: str, splits: dict,
-                        train_ids=None) -> dict:
+                        train_ids=None, evaluate_test=False) -> dict:
     """
     df: customer-level features + label.
     splits: the ONE shared customer split (FIX: the original re-split here with an unstratified
@@ -140,9 +148,10 @@ def train_product_model(df: pd.DataFrame, product_id: str, splits: dict,
     cal_params["n_estimators"] = (best_iter + 1) if best_iter is not None else 200
 
     calibrators = {}
-    if int(y_tr.sum()) >= 15:
+    if min(int(y_tr.sum()), int((y_tr == 0).sum())) >= 15:
         for method in ["isotonic", "sigmoid"]:
-            cal = CalibratedClassifierCV(xgb.XGBClassifier(**cal_params), method=method, cv=3)
+            cv = StratifiedKFold(3, shuffle=True, random_state=RANDOM_STATE)
+            cal = CalibratedClassifierCV(xgb.XGBClassifier(**cal_params), method=method, cv=cv, ensemble=False)
             cal.fit(X_tr, y_tr)
             p = cal.predict_proba(X_va)[:, 1]
             calibrators[method] = (cal, brier_score_loss(y_va, p))
@@ -164,32 +173,36 @@ def train_product_model(df: pd.DataFrame, product_id: str, splits: dict,
                                           random_state=RANDOM_STATE))
     lr.fit(X_tr, y_tr)
     lr_va = lr.predict_proba(X_va)[:, 1]
-    rule_va = rule_baseline_score(va, product_id)
+    rule_va = rule_baseline_score(va, product_id, tr)
 
     final_va = cal_model.predict_proba(X_va)[:, 1] if use_calibrated else raw_va
+    final_va = np.clip(final_va, 0.001, 0.999)
     metrics = {
         "xgb": _metrics(y_va, final_va),
         "logreg": _metrics(y_va, lr_va),
         "rule": _metrics(y_va, rule_va),
     }
 
-    # --- Test metrics (every test customer, nothing filtered) ---
-    final_te = (cal_model.predict_proba(X_te)[:, 1] if use_calibrated
-                else model.predict_proba(X_te)[:, 1])
-    test_metrics = {
-        "xgb": _metrics(y_te, final_te),
-        "logreg": _metrics(y_te, lr.predict_proba(X_te)[:, 1]),
-        "rule": _metrics(y_te, rule_baseline_score(te, product_id)),
-    }
-    try:
+    # Test evaluation is disabled during selection and reproducibility runs.
+    test_metrics, calib_curve = None, None
+    if evaluate_test:
+        final_te = np.clip(cal_model.predict_proba(X_te)[:, 1] if use_calibrated
+                           else model.predict_proba(X_te)[:, 1], 0.001, 0.999)
+        test_metrics = {
+            "xgb": _metrics(y_te, final_te),
+            "logreg": _metrics(y_te, lr.predict_proba(X_te)[:, 1]),
+            "rule": _metrics(y_te, rule_baseline_score(te, product_id, tr)),
+        }
         frac_pos, mean_pred = calibration_curve(y_te, final_te, n_bins=10, strategy="quantile")
         calib_curve = {"mean_predicted": mean_pred, "fraction_positive": frac_pos}
-    except ValueError:
-        calib_curve = None
 
     artifact = {
         "product_id": product_id,
         "model": model,
+        "logreg": lr,
+        "rule_reference": tr[feats].copy(),
+        "calibration_method": best_method if use_calibrated else "raw",
+        "calibration_brier": {"raw": brier_raw, **{m: float(v[1]) for m, v in calibrators.items()}},
         "calibrator": cal_model if use_calibrated else None,
         "use_calibrated": use_calibrated,
         "feature_cols": feats,

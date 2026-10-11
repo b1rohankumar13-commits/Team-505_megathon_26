@@ -1,0 +1,1835 @@
+{
+  "cutoff_date": "2025-12-31",
+  "label_window_months": 6,
+  "metrics_definition": {
+    "pr_auc": "average precision (not trapezoidal area)",
+    "precision_at_k": "k=ceil(10% of evaluated customers); stable customer-ID tie order",
+    "lift_top10": "precision_at_k / prevalence"
+  },
+  "data_sizes": {
+    "customers": 1000,
+    "transactions": 84112,
+    "products": 1563,
+    "vehicles": 803,
+    "energy": 12000,
+    "digital": 12000,
+    "labels_transactions": 84112,
+    "labels_takeup": 4000
+  },
+  "input_hashes": {
+    "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\data\\customers.csv": "21e77d151b1a21b00dcef508e3eb5244cd30f002dbc25a8d4e32d1f23b41bc8c",
+    "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\data\\transactions.csv": "dc70c4508d2cf79e8266e75010026ab4de102094706624b92747f43de27f0448",
+    "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\data\\products.csv": "676a9a0d1d2c13195e99e68e1b43c862d33ad8da70312f3923c7123ef78da859",
+    "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\data\\vehicles.csv": "f88c8899ab894d0623ceaa7184536b674a0ef21b2db6c9d9a7c5d887702fe1ac",
+    "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\data\\energy_usage.csv": "b00f6859a8f1a775dbf9abf2c69b583e0d2a76f4036a642195a0479c9b5daf08",
+    "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\data\\digital_usage.csv": "845b3bcd64b2ab9faf4afabb149f18b39b3e11c97bba1b008e9f4445e32b7ad1",
+    "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\data\\labels_transactions.csv": "2c7f12277833c9ce535669328a43c11f3193721c01074023de4a96775a4934b9",
+    "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\data\\labels_takeup.csv": "24861341ff0a563cd3542e6f0ff2f2fba8a944af6b58fd30c7227cfc09712e26"
+  },
+  "positives_per_split": [
+    {
+      "split": "train",
+      "product": "GP01",
+      "customers": 700,
+      "positive": 184,
+      "negative": 516
+    },
+    {
+      "split": "train",
+      "product": "GP02",
+      "customers": 700,
+      "positive": 117,
+      "negative": 583
+    },
+    {
+      "split": "train",
+      "product": "GP03",
+      "customers": 700,
+      "positive": 67,
+      "negative": 633
+    },
+    {
+      "split": "train",
+      "product": "GP04",
+      "customers": 700,
+      "positive": 156,
+      "negative": 544
+    },
+    {
+      "split": "val",
+      "product": "GP01",
+      "customers": 150,
+      "positive": 41,
+      "negative": 109
+    },
+    {
+      "split": "val",
+      "product": "GP02",
+      "customers": 150,
+      "positive": 22,
+      "negative": 128
+    },
+    {
+      "split": "val",
+      "product": "GP03",
+      "customers": 150,
+      "positive": 10,
+      "negative": 140
+    },
+    {
+      "split": "val",
+      "product": "GP04",
+      "customers": 150,
+      "positive": 39,
+      "negative": 111
+    },
+    {
+      "split": "test",
+      "product": "GP01",
+      "customers": 150,
+      "positive": 40,
+      "negative": 110
+    },
+    {
+      "split": "test",
+      "product": "GP02",
+      "customers": 150,
+      "positive": 25,
+      "negative": 125
+    },
+    {
+      "split": "test",
+      "product": "GP03",
+      "customers": 150,
+      "positive": 17,
+      "negative": 133
+    },
+    {
+      "split": "test",
+      "product": "GP04",
+      "customers": 150,
+      "positive": 37,
+      "negative": 113
+    }
+  ],
+  "energy_ransac": {
+    "energy_fit_rows": 7932,
+    "energy_threshold": 0.16974193544282162,
+    "energy_rows_flagged": 434
+  },
+  "categoriser_selection": {
+    "kind": "logreg",
+    "logreg": 1.0,
+    "svc": 1.0,
+    "rules": 0.532084310620444,
+    "hybrid": 0.9508546812282426,
+    "use_rules": false
+  },
+  "categoriser_validation": [
+    {
+      "partition": "val",
+      "model": "ml_only",
+      "macro_f1": 1.0,
+      "accuracy": 1.0,
+      "unseen_merchants_rows": 0,
+      "unseen_merchant_accuracy": null,
+      "per_class": [
+        {
+          "category": "Fuel",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1152
+        },
+        {
+          "category": "Electricity",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1800
+        },
+        {
+          "category": "Gas",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1800
+        },
+        {
+          "category": "Public Transport",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1800
+        },
+        {
+          "category": "Home Improvement",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 229
+        },
+        {
+          "category": "Automotive",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 280
+        },
+        {
+          "category": "Utilities",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1800
+        },
+        {
+          "category": "Other",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 3600
+        }
+      ],
+      "boundary_confusions": [
+        {
+          "actual": "Fuel",
+          "predicted": "Automotive",
+          "errors": 0
+        },
+        {
+          "actual": "Automotive",
+          "predicted": "Fuel",
+          "errors": 0
+        },
+        {
+          "actual": "Electricity",
+          "predicted": "Utilities",
+          "errors": 0
+        },
+        {
+          "actual": "Utilities",
+          "predicted": "Electricity",
+          "errors": 0
+        },
+        {
+          "actual": "Gas",
+          "predicted": "Utilities",
+          "errors": 0
+        },
+        {
+          "actual": "Utilities",
+          "predicted": "Gas",
+          "errors": 0
+        }
+      ],
+      "errors_saved": 0,
+      "confusion_png": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\results\\categoriser\\val\\ml_only\\confusion.png"
+    },
+    {
+      "partition": "val",
+      "model": "hybrid",
+      "macro_f1": 0.9508546812282426,
+      "accuracy": 0.9534547789101998,
+      "unseen_merchants_rows": 0,
+      "unseen_merchant_accuracy": null,
+      "per_class": [
+        {
+          "category": "Fuel",
+          "precision": 0.6651270207852193,
+          "recall": 1.0,
+          "f1": 0.7988904299583911,
+          "support": 1152
+        },
+        {
+          "category": "Electricity",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1800
+        },
+        {
+          "category": "Gas",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1800
+        },
+        {
+          "category": "Public Transport",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1800
+        },
+        {
+          "category": "Home Improvement",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 229
+        },
+        {
+          "category": "Automotive",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 280
+        },
+        {
+          "category": "Utilities",
+          "precision": 1.0,
+          "recall": 0.6777777777777778,
+          "f1": 0.8079470198675497,
+          "support": 1800
+        },
+        {
+          "category": "Other",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 3600
+        }
+      ],
+      "boundary_confusions": [
+        {
+          "actual": "Fuel",
+          "predicted": "Automotive",
+          "errors": 0
+        },
+        {
+          "actual": "Automotive",
+          "predicted": "Fuel",
+          "errors": 0
+        },
+        {
+          "actual": "Electricity",
+          "predicted": "Utilities",
+          "errors": 0
+        },
+        {
+          "actual": "Utilities",
+          "predicted": "Electricity",
+          "errors": 0
+        },
+        {
+          "actual": "Gas",
+          "predicted": "Utilities",
+          "errors": 0
+        },
+        {
+          "actual": "Utilities",
+          "predicted": "Gas",
+          "errors": 0
+        }
+      ],
+      "errors_saved": 10,
+      "confusion_png": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\results\\categoriser\\val\\hybrid\\confusion.png"
+    },
+    {
+      "partition": "val",
+      "model": "rules",
+      "macro_f1": 0.532084310620444,
+      "accuracy": 0.6381510312173982,
+      "unseen_merchants_rows": 0,
+      "unseen_merchant_accuracy": null,
+      "per_class": [
+        {
+          "category": "Fuel",
+          "precision": 0.6651270207852193,
+          "recall": 1.0,
+          "f1": 0.7988904299583911,
+          "support": 1152
+        },
+        {
+          "category": "Electricity",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1800
+        },
+        {
+          "category": "Gas",
+          "precision": 1.0,
+          "recall": 0.33,
+          "f1": 0.49624060150375937,
+          "support": 1800
+        },
+        {
+          "category": "Public Transport",
+          "precision": 1.0,
+          "recall": 0.3433333333333333,
+          "f1": 0.511166253101737,
+          "support": 1800
+        },
+        {
+          "category": "Home Improvement",
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 229
+        },
+        {
+          "category": "Automotive",
+          "precision": 1.0,
+          "recall": 0.6714285714285714,
+          "f1": 0.8034188034188035,
+          "support": 280
+        },
+        {
+          "category": "Utilities",
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 1800
+        },
+        {
+          "category": "Other",
+          "precision": 0.47815114889095495,
+          "recall": 1.0,
+          "f1": 0.6469583969808608,
+          "support": 3600
+        }
+      ],
+      "boundary_confusions": [
+        {
+          "actual": "Fuel",
+          "predicted": "Automotive",
+          "errors": 0
+        },
+        {
+          "actual": "Automotive",
+          "predicted": "Fuel",
+          "errors": 0
+        },
+        {
+          "actual": "Electricity",
+          "predicted": "Utilities",
+          "errors": 0
+        },
+        {
+          "actual": "Utilities",
+          "predicted": "Electricity",
+          "errors": 0
+        },
+        {
+          "actual": "Gas",
+          "predicted": "Utilities",
+          "errors": 0
+        },
+        {
+          "actual": "Utilities",
+          "predicted": "Gas",
+          "errors": 0
+        }
+      ],
+      "errors_saved": 10,
+      "confusion_png": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\results\\categoriser\\val\\rules\\confusion.png"
+    }
+  ],
+  "customer_ransac": {
+    "fuel_fit_rows": 514,
+    "fuel_threshold": 0.12285387781530299,
+    "fuel_flagged": 6,
+    "flag_rate_train": 0.007142857142857143,
+    "flag_rate_val": 0.0,
+    "flag_rate_test": 0.006666666666666667
+  },
+  "customer360_shape": [
+    1000,
+    85
+  ],
+  "validation_metrics": {
+    "GP01": {
+      "all_train": {
+        "xgb": {
+          "pr_auc": 0.6003371256414656,
+          "roc_auc": 0.8243454911613337,
+          "brier": 0.15361828989399195,
+          "lift_top10": 2.1951219512195124,
+          "precision_at_k": 0.6,
+          "k": 15,
+          "customers": 150,
+          "positive": 41
+        },
+        "logreg": {
+          "pr_auc": 0.5342750211991159,
+          "roc_auc": 0.8053255761915418,
+          "brier": 0.1671100689957057,
+          "lift_top10": 1.707317073170732,
+          "precision_at_k": 0.4666666666666667,
+          "k": 15,
+          "customers": 150,
+          "positive": 41
+        },
+        "rule": {
+          "pr_auc": 0.49597956977312696,
+          "roc_auc": 0.7673976281047215,
+          "brier": 0.2005273743008285,
+          "lift_top10": 1.707317073170732,
+          "precision_at_k": 0.4666666666666667,
+          "k": 15,
+          "customers": 150,
+          "positive": 41
+        }
+      },
+      "inliers_only": {
+        "xgb": {
+          "pr_auc": 0.6020136455559084,
+          "roc_auc": 0.8306108749160885,
+          "brier": 0.15062972228694496,
+          "lift_top10": 2.682926829268293,
+          "precision_at_k": 0.7333333333333333,
+          "k": 15,
+          "customers": 150,
+          "positive": 41
+        },
+        "logreg": {
+          "pr_auc": 0.526102093255233,
+          "roc_auc": 0.8062206310136495,
+          "brier": 0.1681745510698734,
+          "lift_top10": 1.9512195121951221,
+          "precision_at_k": 0.5333333333333333,
+          "k": 15,
+          "customers": 150,
+          "positive": 41
+        },
+        "rule": {
+          "pr_auc": 0.4955044351516509,
+          "roc_auc": 0.7671738643991945,
+          "brier": 0.20099912922216917,
+          "lift_top10": 1.707317073170732,
+          "precision_at_k": 0.4666666666666667,
+          "k": 15,
+          "customers": 150,
+          "positive": 41
+        }
+      }
+    },
+    "GP02": {
+      "all_train": {
+        "xgb": {
+          "pr_auc": 0.4321472872221136,
+          "roc_auc": 0.8064630681818181,
+          "brier": 0.10633210208162555,
+          "lift_top10": 3.6363636363636362,
+          "precision_at_k": 0.5333333333333333,
+          "k": 15,
+          "customers": 150,
+          "positive": 22
+        },
+        "logreg": {
+          "pr_auc": 0.3852085323643276,
+          "roc_auc": 0.7816051136363636,
+          "brier": 0.16343982936435553,
+          "lift_top10": 2.2727272727272725,
+          "precision_at_k": 0.3333333333333333,
+          "k": 15,
+          "customers": 150,
+          "positive": 22
+        },
+        "rule": {
+          "pr_auc": 0.3221397285536577,
+          "roc_auc": 0.7487571022727273,
+          "brier": 0.29751097357035555,
+          "lift_top10": 1.8181818181818181,
+          "precision_at_k": 0.26666666666666666,
+          "k": 15,
+          "customers": 150,
+          "positive": 22
+        }
+      },
+      "inliers_only": {
+        "xgb": {
+          "pr_auc": 0.37015052788203856,
+          "roc_auc": 0.8153409090909092,
+          "brier": 0.10986096997552106,
+          "lift_top10": 1.8181818181818181,
+          "precision_at_k": 0.26666666666666666,
+          "k": 15,
+          "customers": 150,
+          "positive": 22
+        },
+        "logreg": {
+          "pr_auc": 0.3836800763918842,
+          "roc_auc": 0.7745028409090908,
+          "brier": 0.16511891690541775,
+          "lift_top10": 2.2727272727272725,
+          "precision_at_k": 0.3333333333333333,
+          "k": 15,
+          "customers": 150,
+          "positive": 22
+        },
+        "rule": {
+          "pr_auc": 0.3221397285536577,
+          "roc_auc": 0.7487571022727273,
+          "brier": 0.29762510951641863,
+          "lift_top10": 1.8181818181818181,
+          "precision_at_k": 0.26666666666666666,
+          "k": 15,
+          "customers": 150,
+          "positive": 22
+        }
+      }
+    },
+    "GP03": {
+      "all_train": {
+        "xgb": {
+          "pr_auc": 0.22203751065643648,
+          "roc_auc": 0.7742857142857144,
+          "brier": 0.058872837496163975,
+          "lift_top10": 3.0,
+          "precision_at_k": 0.2,
+          "k": 15,
+          "customers": 150,
+          "positive": 10
+        },
+        "logreg": {
+          "pr_auc": 0.22955575604942996,
+          "roc_auc": 0.7514285714285714,
+          "brier": 0.16350857116286155,
+          "lift_top10": 2.0,
+          "precision_at_k": 0.13333333333333333,
+          "k": 15,
+          "customers": 150,
+          "positive": 10
+        },
+        "rule": {
+          "pr_auc": 0.1080892457491558,
+          "roc_auc": 0.6621428571428571,
+          "brier": 0.3313821009595174,
+          "lift_top10": 1.0,
+          "precision_at_k": 0.06666666666666667,
+          "k": 15,
+          "customers": 150,
+          "positive": 10
+        }
+      },
+      "inliers_only": {
+        "xgb": {
+          "pr_auc": 0.30259699740018264,
+          "roc_auc": 0.6910714285714286,
+          "brier": 0.06072597333150855,
+          "lift_top10": 3.0,
+          "precision_at_k": 0.2,
+          "k": 15,
+          "customers": 150,
+          "positive": 10
+        },
+        "logreg": {
+          "pr_auc": 0.2293231878736422,
+          "roc_auc": 0.7507142857142857,
+          "brier": 0.16363715576132884,
+          "lift_top10": 2.0,
+          "precision_at_k": 0.13333333333333333,
+          "k": 15,
+          "customers": 150,
+          "positive": 10
+        },
+        "rule": {
+          "pr_auc": 0.1080892457491558,
+          "roc_auc": 0.6621428571428571,
+          "brier": 0.3311672613273467,
+          "lift_top10": 1.0,
+          "precision_at_k": 0.06666666666666667,
+          "k": 15,
+          "customers": 150,
+          "positive": 10
+        }
+      }
+    },
+    "GP04": {
+      "all_train": {
+        "xgb": {
+          "pr_auc": 0.49359561113334083,
+          "roc_auc": 0.8136983136983137,
+          "brier": 0.14281695698619412,
+          "lift_top10": 2.564102564102564,
+          "precision_at_k": 0.6666666666666666,
+          "k": 15,
+          "customers": 150,
+          "positive": 39
+        },
+        "logreg": {
+          "pr_auc": 0.5079738618255976,
+          "roc_auc": 0.7997227997227998,
+          "brier": 0.1851058611172392,
+          "lift_top10": 2.051282051282051,
+          "precision_at_k": 0.5333333333333333,
+          "k": 15,
+          "customers": 150,
+          "positive": 39
+        },
+        "rule": {
+          "pr_auc": 0.3359487846103416,
+          "roc_auc": 0.6881496881496882,
+          "brier": 0.27183688775510206,
+          "lift_top10": 0.7692307692307693,
+          "precision_at_k": 0.2,
+          "k": 15,
+          "customers": 150,
+          "positive": 39
+        }
+      },
+      "inliers_only": {
+        "xgb": {
+          "pr_auc": 0.5624374235588323,
+          "roc_auc": 0.8357588357588357,
+          "brier": 0.1392967188470434,
+          "lift_top10": 2.8205128205128203,
+          "precision_at_k": 0.7333333333333333,
+          "k": 15,
+          "customers": 150,
+          "positive": 39
+        },
+        "logreg": {
+          "pr_auc": 0.4979725857888178,
+          "roc_auc": 0.7983367983367984,
+          "brier": 0.18687633889896466,
+          "lift_top10": 2.051282051282051,
+          "precision_at_k": 0.5333333333333333,
+          "k": 15,
+          "customers": 150,
+          "positive": 39
+        },
+        "rule": {
+          "pr_auc": 0.3359487846103416,
+          "roc_auc": 0.6881496881496882,
+          "brier": 0.27347938857547055,
+          "lift_top10": 0.7692307692307693,
+          "precision_at_k": 0.2,
+          "k": 15,
+          "customers": 150,
+          "positive": 39
+        }
+      }
+    }
+  },
+  "ablation": {
+    "GP01": {
+      "selected": "inliers_only",
+      "selection_rule": "validation Pareto dominance",
+      "all_train_n": 700,
+      "inlier_train_n": 695
+    },
+    "GP02": {
+      "selected": "all_train",
+      "selection_rule": "validation dominance or tie",
+      "all_train_n": 700,
+      "inlier_train_n": 695
+    },
+    "GP03": {
+      "selected": "inliers_only",
+      "selection_rule": "validation AP minus Brier trade-off (declared before evaluation)",
+      "all_train_n": 700,
+      "inlier_train_n": 695
+    },
+    "GP04": {
+      "selected": "inliers_only",
+      "selection_rule": "validation Pareto dominance",
+      "all_train_n": 700,
+      "inlier_train_n": 695
+    }
+  },
+  "reproducibility": {
+    "features": "identical",
+    "probabilities": "identical",
+    "validation_metrics": "identical",
+    "test_repeated": false
+  },
+  "thresholds": {
+    "GP01": {
+      "xgb": {
+        "threshold": 0.18404997909175744,
+        "validation_f1": 0.65,
+        "objective": "max F1; highest-threshold tie-break"
+      },
+      "logreg": {
+        "threshold": 0.4280156956620981,
+        "validation_f1": 0.6363636363636365,
+        "objective": "max F1; highest-threshold tie-break"
+      },
+      "rule": {
+        "threshold": 0.1755331449126413,
+        "validation_f1": 0.6074074074074074,
+        "objective": "max F1; highest-threshold tie-break"
+      }
+    },
+    "GP02": {
+      "xgb": {
+        "threshold": 0.2811511868404033,
+        "validation_f1": 0.47368421052631576,
+        "objective": "max F1; highest-threshold tie-break"
+      },
+      "logreg": {
+        "threshold": 0.4711203234890049,
+        "validation_f1": 0.4225352112676057,
+        "objective": "max F1; highest-threshold tie-break"
+      },
+      "rule": {
+        "threshold": 0.8029500756429653,
+        "validation_f1": 0.4615384615384615,
+        "objective": "max F1; highest-threshold tie-break"
+      }
+    },
+    "GP03": {
+      "xgb": {
+        "threshold": 0.27749104139330144,
+        "validation_f1": 0.4285714285714285,
+        "objective": "max F1; highest-threshold tie-break"
+      },
+      "logreg": {
+        "threshold": 0.5567150418070227,
+        "validation_f1": 0.25,
+        "objective": "max F1; highest-threshold tie-break"
+      },
+      "rule": {
+        "threshold": 0.6753799392097264,
+        "validation_f1": 0.21212121212121213,
+        "objective": "max F1; highest-threshold tie-break"
+      }
+    },
+    "GP04": {
+      "xgb": {
+        "threshold": 0.37049344182014465,
+        "validation_f1": 0.6153846153846154,
+        "objective": "max F1; highest-threshold tie-break"
+      },
+      "logreg": {
+        "threshold": 0.1240179626183484,
+        "validation_f1": 0.6141732283464567,
+        "objective": "max F1; highest-threshold tie-break"
+      },
+      "rule": {
+        "threshold": 0.45827338129496403,
+        "validation_f1": 0.6141732283464567,
+        "objective": "max F1; highest-threshold tie-break"
+      }
+    }
+  },
+  "confidence": {
+    "GP01": {
+      "method": "calibrated_certainty",
+      "formula": "C = D**3 * S; selected S=calibrated_certainty. D=mean observed coverage of four data blocks; ensemble agreement=1-2*std(seed probabilities); certainty=1-binary_entropy(p)/log(2); margin=abs(2*p-1); blend weights={'ensemble_spread': 0.25, 'calibrated_certainty': 0.35, 'data_completeness': 0.2, 'margin': 0.2}. Percentiles use training customers only. If no method passes validation, the runner stops and saves the comparison table.",
+      "validated": true,
+      "comparison": [
+        {
+          "method": "ensemble_spread",
+          "spearman": -0.30661534140054564,
+          "brier_low": 0.06110957562456174,
+          "brier_middle": 0.21617323742263658,
+          "brier_high": 0.17460635381363662,
+          "n_low": 50,
+          "n_middle": 50,
+          "n_high": 50,
+          "eligible": false,
+          "selected": false
+        },
+        {
+          "method": "calibrated_certainty",
+          "spearman": 0.643560812375181,
+          "brier_low": 0.24298706042764717,
+          "brier_middle": 0.11113090206479985,
+          "brier_high": 0.09204561964135419,
+          "n_low": 50,
+          "n_middle": 65,
+          "n_high": 35,
+          "eligible": true,
+          "selected": true
+        },
+        {
+          "method": "data_completeness",
+          "spearman": -0.6339334004673126,
+          "brier_low": 0.15062972228694496,
+          "brier_middle": null,
+          "brier_high": null,
+          "n_low": 150,
+          "n_middle": 0,
+          "n_high": 0,
+          "eligible": false,
+          "selected": false
+        },
+        {
+          "method": "blend",
+          "spearman": -0.19185901375870373,
+          "brier_low": 0.05053876253287656,
+          "brier_middle": 0.24738899168368256,
+          "brier_high": 0.15396141264427576,
+          "n_low": 50,
+          "n_middle": 50,
+          "n_high": 50,
+          "eligible": false,
+          "selected": false
+        }
+      ]
+    },
+    "GP02": {
+      "method": "calibrated_certainty",
+      "formula": "C = D**3 * S; selected S=calibrated_certainty. D=mean observed coverage of four data blocks; ensemble agreement=1-2*std(seed probabilities); certainty=1-binary_entropy(p)/log(2); margin=abs(2*p-1); blend weights={'ensemble_spread': 0.25, 'calibrated_certainty': 0.35, 'data_completeness': 0.2, 'margin': 0.2}. Percentiles use training customers only. If no method passes validation, the runner stops and saves the comparison table.",
+      "validated": true,
+      "comparison": [
+        {
+          "method": "ensemble_spread",
+          "spearman": 0.23805011431677128,
+          "brier_low": 0.09641192091019768,
+          "brier_middle": 0.16112808583885754,
+          "brier_high": 0.061456299495821404,
+          "n_low": 50,
+          "n_middle": 50,
+          "n_high": 50,
+          "eligible": true,
+          "selected": false
+        },
+        {
+          "method": "calibrated_certainty",
+          "spearman": 0.7705987665185706,
+          "brier_low": 0.19619147917204793,
+          "brier_middle": 0.08608582602161373,
+          "brier_high": 0.036719001051215006,
+          "n_low": 50,
+          "n_middle": 50,
+          "n_high": 50,
+          "eligible": true,
+          "selected": true
+        },
+        {
+          "method": "data_completeness",
+          "spearman": -0.14311703959325714,
+          "brier_low": 0.10633210208162555,
+          "brier_middle": null,
+          "brier_high": null,
+          "n_low": 150,
+          "n_middle": 0,
+          "n_high": 0,
+          "eligible": false,
+          "selected": false
+        },
+        {
+          "method": "blend",
+          "spearman": 0.3995758026155079,
+          "brier_low": 0.1164497565060757,
+          "brier_middle": 0.16580895901429224,
+          "brier_high": 0.03673759072450871,
+          "n_low": 50,
+          "n_middle": 50,
+          "n_high": 50,
+          "eligible": true,
+          "selected": false
+        }
+      ]
+    },
+    "GP03": {
+      "method": "calibrated_certainty",
+      "formula": "C = D**3 * S; selected S=calibrated_certainty. D=mean observed coverage of four data blocks; ensemble agreement=1-2*std(seed probabilities); certainty=1-binary_entropy(p)/log(2); margin=abs(2*p-1); blend weights={'ensemble_spread': 0.25, 'calibrated_certainty': 0.35, 'data_completeness': 0.2, 'margin': 0.2}. Percentiles use training customers only. If no method passes validation, the runner stops and saves the comparison table.",
+      "validated": true,
+      "comparison": [
+        {
+          "method": "ensemble_spread",
+          "spearman": 0.292029121451106,
+          "brier_low": 0.08162076434536295,
+          "brier_middle": 0.0805301790933048,
+          "brier_high": 0.020026976555857893,
+          "n_low": 50,
+          "n_middle": 50,
+          "n_high": 50,
+          "eligible": true,
+          "selected": false
+        },
+        {
+          "method": "calibrated_certainty",
+          "spearman": 0.654414435914558,
+          "brier_low": 0.1023819050139328,
+          "brier_middle": 0.059590863817037626,
+          "brier_high": 0.020205151163555174,
+          "n_low": 50,
+          "n_middle": 50,
+          "n_high": 50,
+          "eligible": true,
+          "selected": true
+        },
+        {
+          "method": "data_completeness",
+          "spearman": 0.03856982470274747,
+          "brier_low": 0.06072597333150855,
+          "brier_middle": null,
+          "brier_high": null,
+          "n_low": 150,
+          "n_middle": 0,
+          "n_high": 0,
+          "eligible": false,
+          "selected": false
+        },
+        {
+          "method": "blend",
+          "spearman": 0.5770991480168447,
+          "brier_low": 0.09905863799956477,
+          "brier_middle": 0.0798764961968974,
+          "brier_high": 0.003242785798063458,
+          "n_low": 50,
+          "n_middle": 50,
+          "n_high": 50,
+          "eligible": true,
+          "selected": false
+        }
+      ]
+    },
+    "GP04": {
+      "method": "calibrated_certainty",
+      "formula": "C = D**3 * S; selected S=calibrated_certainty. D=mean observed coverage of four data blocks; ensemble agreement=1-2*std(seed probabilities); certainty=1-binary_entropy(p)/log(2); margin=abs(2*p-1); blend weights={'ensemble_spread': 0.25, 'calibrated_certainty': 0.35, 'data_completeness': 0.2, 'margin': 0.2}. Percentiles use training customers only. If no method passes validation, the runner stops and saves the comparison table.",
+      "validated": true,
+      "comparison": [
+        {
+          "method": "ensemble_spread",
+          "spearman": 0.4231399959025985,
+          "brier_low": 0.15994802770564948,
+          "brier_middle": 0.22610363084276486,
+          "brier_high": 0.023744117457297098,
+          "n_low": 50,
+          "n_middle": 52,
+          "n_high": 48,
+          "eligible": true,
+          "selected": false
+        },
+        {
+          "method": "calibrated_certainty",
+          "spearman": 0.8100202108454235,
+          "brier_low": 0.23283439264498873,
+          "brier_middle": 0.13818484781218127,
+          "brier_high": 9.999999999999997e-07,
+          "n_low": 66,
+          "n_middle": 40,
+          "n_high": 44,
+          "eligible": true,
+          "selected": true
+        },
+        {
+          "method": "data_completeness",
+          "spearman": -0.008740745615328506,
+          "brier_low": 0.1392967188470434,
+          "brier_middle": null,
+          "brier_high": null,
+          "n_low": 150,
+          "n_middle": 0,
+          "n_high": 0,
+          "eligible": false,
+          "selected": false
+        },
+        {
+          "method": "blend",
+          "spearman": 0.4625440614272916,
+          "brier_low": 0.15029928501086895,
+          "brier_middle": 0.2298718500228587,
+          "brier_high": 0.03771902150740247,
+          "n_low": 50,
+          "n_middle": 50,
+          "n_high": 50,
+          "eligible": true,
+          "selected": false
+        }
+      ]
+    }
+  },
+  "scenarios": {
+    "profiles": 9,
+    "predictions": 36,
+    "assertions": "passed"
+  },
+  "categoriser_test": [
+    {
+      "partition": "test",
+      "model": "ml_only",
+      "macro_f1": 1.0,
+      "accuracy": 1.0,
+      "unseen_merchants_rows": 0,
+      "unseen_merchant_accuracy": null,
+      "per_class": [
+        {
+          "category": "Fuel",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1380
+        },
+        {
+          "category": "Electricity",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1800
+        },
+        {
+          "category": "Gas",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1800
+        },
+        {
+          "category": "Public Transport",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1800
+        },
+        {
+          "category": "Home Improvement",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 243
+        },
+        {
+          "category": "Automotive",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 298
+        },
+        {
+          "category": "Utilities",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1800
+        },
+        {
+          "category": "Other",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 3600
+        }
+      ],
+      "boundary_confusions": [
+        {
+          "actual": "Fuel",
+          "predicted": "Automotive",
+          "errors": 0
+        },
+        {
+          "actual": "Automotive",
+          "predicted": "Fuel",
+          "errors": 0
+        },
+        {
+          "actual": "Electricity",
+          "predicted": "Utilities",
+          "errors": 0
+        },
+        {
+          "actual": "Utilities",
+          "predicted": "Electricity",
+          "errors": 0
+        },
+        {
+          "actual": "Gas",
+          "predicted": "Utilities",
+          "errors": 0
+        },
+        {
+          "actual": "Utilities",
+          "predicted": "Gas",
+          "errors": 0
+        }
+      ],
+      "errors_saved": 0,
+      "confusion_png": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\results\\categoriser\\test\\ml_only\\confusion.png"
+    },
+    {
+      "partition": "test",
+      "model": "hybrid",
+      "macro_f1": 0.9563690679744223,
+      "accuracy": 0.9564499646254225,
+      "unseen_merchants_rows": 0,
+      "unseen_merchant_accuracy": null,
+      "per_class": [
+        {
+          "category": "Fuel",
+          "precision": 0.7135470527404343,
+          "recall": 1.0,
+          "f1": 0.8328304164152082,
+          "support": 1380
+        },
+        {
+          "category": "Electricity",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1800
+        },
+        {
+          "category": "Gas",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1800
+        },
+        {
+          "category": "Public Transport",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1800
+        },
+        {
+          "category": "Home Improvement",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 243
+        },
+        {
+          "category": "Automotive",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 298
+        },
+        {
+          "category": "Utilities",
+          "precision": 1.0,
+          "recall": 0.6922222222222222,
+          "f1": 0.8181221273801708,
+          "support": 1800
+        },
+        {
+          "category": "Other",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 3600
+        }
+      ],
+      "boundary_confusions": [
+        {
+          "actual": "Fuel",
+          "predicted": "Automotive",
+          "errors": 0
+        },
+        {
+          "actual": "Automotive",
+          "predicted": "Fuel",
+          "errors": 0
+        },
+        {
+          "actual": "Electricity",
+          "predicted": "Utilities",
+          "errors": 0
+        },
+        {
+          "actual": "Utilities",
+          "predicted": "Electricity",
+          "errors": 0
+        },
+        {
+          "actual": "Gas",
+          "predicted": "Utilities",
+          "errors": 0
+        },
+        {
+          "actual": "Utilities",
+          "predicted": "Gas",
+          "errors": 0
+        }
+      ],
+      "errors_saved": 10,
+      "confusion_png": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\results\\categoriser\\test\\hybrid\\confusion.png"
+    },
+    {
+      "partition": "test",
+      "model": "rules",
+      "macro_f1": 0.536343144082742,
+      "accuracy": 0.6425595472054084,
+      "unseen_merchants_rows": 0,
+      "unseen_merchant_accuracy": null,
+      "per_class": [
+        {
+          "category": "Fuel",
+          "precision": 0.7135470527404343,
+          "recall": 1.0,
+          "f1": 0.8328304164152082,
+          "support": 1380
+        },
+        {
+          "category": "Electricity",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1800
+        },
+        {
+          "category": "Gas",
+          "precision": 1.0,
+          "recall": 0.34444444444444444,
+          "f1": 0.512396694214876,
+          "support": 1800
+        },
+        {
+          "category": "Public Transport",
+          "precision": 1.0,
+          "recall": 0.3138888888888889,
+          "f1": 0.47780126849894294,
+          "support": 1800
+        },
+        {
+          "category": "Home Improvement",
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 243
+        },
+        {
+          "category": "Automotive",
+          "precision": 1.0,
+          "recall": 0.7013422818791947,
+          "f1": 0.8244575936883629,
+          "support": 298
+        },
+        {
+          "category": "Utilities",
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 1800
+        },
+        {
+          "category": "Other",
+          "precision": 0.4741209008297116,
+          "recall": 1.0,
+          "f1": 0.6432591798445457,
+          "support": 3600
+        }
+      ],
+      "boundary_confusions": [
+        {
+          "actual": "Fuel",
+          "predicted": "Automotive",
+          "errors": 0
+        },
+        {
+          "actual": "Automotive",
+          "predicted": "Fuel",
+          "errors": 0
+        },
+        {
+          "actual": "Electricity",
+          "predicted": "Utilities",
+          "errors": 0
+        },
+        {
+          "actual": "Utilities",
+          "predicted": "Electricity",
+          "errors": 0
+        },
+        {
+          "actual": "Gas",
+          "predicted": "Utilities",
+          "errors": 0
+        },
+        {
+          "actual": "Utilities",
+          "predicted": "Gas",
+          "errors": 0
+        }
+      ],
+      "errors_saved": 10,
+      "confusion_png": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\results\\categoriser\\test\\rules\\confusion.png"
+    }
+  ],
+  "test_metrics": {
+    "GP01": {
+      "xgb": {
+        "pr_auc": 0.45110071994692796,
+        "roc_auc": 0.7468181818181818,
+        "brier": 0.1665693953593892,
+        "lift_top10": 2.0,
+        "precision_at_k": 0.5333333333333333,
+        "k": 15,
+        "customers": 150,
+        "positive": 40,
+        "threshold": 0.18404997909175744,
+        "precision": 0.3877551020408163,
+        "recall": 0.95,
+        "f1": 0.5507246376811594
+      },
+      "logreg": {
+        "pr_auc": 0.4917603987084522,
+        "roc_auc": 0.7488636363636364,
+        "brier": 0.21628643400118047,
+        "lift_top10": 2.5,
+        "precision_at_k": 0.6666666666666666,
+        "k": 15,
+        "customers": 150,
+        "positive": 40,
+        "threshold": 0.4280156956620981,
+        "precision": 0.38823529411764707,
+        "recall": 0.825,
+        "f1": 0.528
+      },
+      "rule": {
+        "pr_auc": 0.46691107126210973,
+        "roc_auc": 0.6952272727272727,
+        "brier": 0.2550720478935454,
+        "lift_top10": 2.0,
+        "precision_at_k": 0.5333333333333333,
+        "k": 15,
+        "customers": 150,
+        "positive": 40,
+        "threshold": 0.1755331449126413,
+        "precision": 0.3508771929824561,
+        "recall": 1.0,
+        "f1": 0.5194805194805194
+      }
+    },
+    "GP02": {
+      "xgb": {
+        "pr_auc": 0.3031120092625651,
+        "roc_auc": 0.73952,
+        "brier": 0.12745821727221587,
+        "lift_top10": 2.4000000000000004,
+        "precision_at_k": 0.4,
+        "k": 15,
+        "customers": 150,
+        "positive": 25,
+        "threshold": 0.2811511868404033,
+        "precision": 0.3142857142857143,
+        "recall": 0.44,
+        "f1": 0.36666666666666664
+      },
+      "logreg": {
+        "pr_auc": 0.23272256234309607,
+        "roc_auc": 0.6697599999999999,
+        "brier": 0.22926211591927143,
+        "lift_top10": 1.6,
+        "precision_at_k": 0.26666666666666666,
+        "k": 15,
+        "customers": 150,
+        "positive": 25,
+        "threshold": 0.4711203234890049,
+        "precision": 0.23809523809523808,
+        "recall": 0.6,
+        "f1": 0.3409090909090909
+      },
+      "rule": {
+        "pr_auc": 0.3787883382916683,
+        "roc_auc": 0.7104,
+        "brier": 0.31078799356748704,
+        "lift_top10": 2.4000000000000004,
+        "precision_at_k": 0.4,
+        "k": 15,
+        "customers": 150,
+        "positive": 25,
+        "threshold": 0.8029500756429653,
+        "precision": 0.2972972972972973,
+        "recall": 0.44,
+        "f1": 0.3548387096774194
+      }
+    },
+    "GP03": {
+      "xgb": {
+        "pr_auc": 0.2230746061423468,
+        "roc_auc": 0.748562582927908,
+        "brier": 0.09450255964511309,
+        "lift_top10": 2.3529411764705883,
+        "precision_at_k": 0.26666666666666666,
+        "k": 15,
+        "customers": 150,
+        "positive": 17,
+        "threshold": 0.27749104139330144,
+        "precision": 0.14285714285714285,
+        "recall": 0.058823529411764705,
+        "f1": 0.08333333333333333
+      },
+      "logreg": {
+        "pr_auc": 0.19594372205318525,
+        "roc_auc": 0.7032286598850066,
+        "brier": 0.2048397725485578,
+        "lift_top10": 1.1764705882352942,
+        "precision_at_k": 0.13333333333333333,
+        "k": 15,
+        "customers": 150,
+        "positive": 17,
+        "threshold": 0.5567150418070227,
+        "precision": 0.16666666666666666,
+        "recall": 0.47058823529411764,
+        "f1": 0.24615384615384617
+      },
+      "rule": {
+        "pr_auc": 0.30417984109297136,
+        "roc_auc": 0.7147279964617426,
+        "brier": 0.30310340320827295,
+        "lift_top10": 2.3529411764705883,
+        "precision_at_k": 0.26666666666666666,
+        "k": 15,
+        "customers": 150,
+        "positive": 17,
+        "threshold": 0.6753799392097264,
+        "precision": 0.1694915254237288,
+        "recall": 0.5882352941176471,
+        "f1": 0.2631578947368421
+      }
+    },
+    "GP04": {
+      "xgb": {
+        "pr_auc": 0.475660831596247,
+        "roc_auc": 0.7883281511600095,
+        "brier": 0.1446107979920284,
+        "lift_top10": 2.7027027027027026,
+        "precision_at_k": 0.6666666666666666,
+        "k": 15,
+        "customers": 150,
+        "positive": 37,
+        "threshold": 0.37049344182014465,
+        "precision": 0.4117647058823529,
+        "recall": 0.7567567567567568,
+        "f1": 0.5333333333333333
+      },
+      "logreg": {
+        "pr_auc": 0.506110796262241,
+        "roc_auc": 0.8024396077493422,
+        "brier": 0.1984738225853215,
+        "lift_top10": 2.1621621621621623,
+        "precision_at_k": 0.5333333333333333,
+        "k": 15,
+        "customers": 150,
+        "positive": 37,
+        "threshold": 0.1240179626183484,
+        "precision": 0.38144329896907214,
+        "recall": 1.0,
+        "f1": 0.5522388059701493
+      },
+      "rule": {
+        "pr_auc": 0.2804759028867571,
+        "roc_auc": 0.6121741210236785,
+        "brier": 0.3102393250866932,
+        "lift_top10": 1.0810810810810811,
+        "precision_at_k": 0.26666666666666666,
+        "k": 15,
+        "customers": 150,
+        "positive": 37,
+        "threshold": 0.45827338129496403,
+        "precision": 0.3655913978494624,
+        "recall": 0.918918918918919,
+        "f1": 0.5230769230769231
+      }
+    }
+  },
+  "model_files": [
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\ablation\\GP01\\all_train\\propensity_GP01.joblib",
+      "bytes": 876051
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\ablation\\GP01\\inliers_only\\propensity_GP01.joblib",
+      "bytes": 691987
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\ablation\\GP02\\all_train\\propensity_GP02.joblib",
+      "bytes": 713395
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\ablation\\GP02\\inliers_only\\propensity_GP02.joblib",
+      "bytes": 698979
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\ablation\\GP03\\all_train\\propensity_GP03.joblib",
+      "bytes": 809523
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\ablation\\GP03\\inliers_only\\propensity_GP03.joblib",
+      "bytes": 594803
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\ablation\\GP04\\all_train\\propensity_GP04.joblib",
+      "bytes": 887907
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\ablation\\GP04\\inliers_only\\propensity_GP04.joblib",
+      "bytes": 595891
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\categoriser.joblib",
+      "bytes": 108041
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\categoriser_kind.joblib",
+      "bytes": 21
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\categoriser_use_rules.joblib",
+      "bytes": 110
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\customer_360.joblib",
+      "bytes": 695168
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\explain_GP01.joblib",
+      "bytes": 302133
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\explain_GP02.joblib",
+      "bytes": 361381
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\explain_GP03.joblib",
+      "bytes": 90117
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\explain_GP04.joblib",
+      "bytes": 82293
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\propensity_GP01.joblib",
+      "bytes": 691987
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\propensity_GP02.joblib",
+      "bytes": 713395
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\propensity_GP03.joblib",
+      "bytes": 594803
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\propensity_GP04.joblib",
+      "bytes": 595891
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\reproducibility\\GP01\\all_train\\propensity_GP01.joblib",
+      "bytes": 876051
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\reproducibility\\GP01\\inliers_only\\propensity_GP01.joblib",
+      "bytes": 691987
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\reproducibility\\GP02\\all_train\\propensity_GP02.joblib",
+      "bytes": 713395
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\reproducibility\\GP02\\inliers_only\\propensity_GP02.joblib",
+      "bytes": 698979
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\reproducibility\\GP03\\all_train\\propensity_GP03.joblib",
+      "bytes": 809523
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\reproducibility\\GP03\\inliers_only\\propensity_GP03.joblib",
+      "bytes": 594803
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\reproducibility\\GP04\\all_train\\propensity_GP04.joblib",
+      "bytes": 887907
+    },
+    {
+      "file": "C:\\Users\\Asus\\Desktop\\Team-505_megathon_26\\artifacts\\reproducibility\\GP04\\inliers_only\\propensity_GP04.joblib",
+      "bytes": 595891
+    }
+  ],
+  "versions": {
+    "pandas": "3.0.3",
+    "numpy": "2.4.6",
+    "scikit-learn": "1.5.2",
+    "xgboost": "3.4.1",
+    "shap": "0.53.0",
+    "matplotlib": "3.11.2",
+    "joblib": "1.5.3"
+  },
+  "limitations": [
+    "Synthetic-data metrics measure recovery of the simulator, not real-world performance.",
+    "The supplied labels/splits were inspected in earlier preprocessing; this is not a never-seen external benchmark.",
+    "The requested stratified split is generated anew; it can differ from the earlier split_manifest.csv.",
+    "The same validation set selects early stopping, calibration, ablation, thresholds and confidence; selection estimates are optimistic.",
+    "Confidence is a validation-tested heuristic, not a guarantee or a calibrated correctness probability.",
+    "SHAP describes the deployed XGBoost tree's raw margin, before its monotone calibration transform.",
+    "Rule baseline scores are heuristics, not calibrated adoption probabilities.",
+    "Unseen-merchant accuracy is null when no such merchants occur; 10 errors means up to 10 actual errors.",
+    "Non-vehicle ownership and unrecorded vehicle data are not distinguished by these existing feature modules.",
+    "No source distance unit is declared; annual mileage is used on its supplied scale without km conversion.",
+    "No carbon, lending eligibility or text-generation functionality is included."
+  ],
+  "runtimes": [
+    {
+      "stage": "1/load and clean",
+      "seconds": 0.4807078999001533,
+      "success": true
+    },
+    {
+      "stage": "2/shared stratified customer split",
+      "seconds": 0.03611079999245703,
+      "success": true
+    },
+    {
+      "stage": "3/train-only energy RANSAC flags",
+      "seconds": 0.04140250012278557,
+      "success": true
+    },
+    {
+      "stage": "4/categoriser training and validation",
+      "seconds": 81.45883230003528,
+      "success": true
+    },
+    {
+      "stage": "5/OOF categories, Customer 360 and customer RANSAC",
+      "seconds": 17.78613180015236,
+      "success": true
+    },
+    {
+      "stage": "6/ablation/GP01/all_train",
+      "seconds": 4.403428300051019,
+      "success": true
+    },
+    {
+      "stage": "6/ablation/GP01/inliers_only",
+      "seconds": 1.0849396998528391,
+      "success": true
+    },
+    {
+      "stage": "6/ablation/GP02/all_train",
+      "seconds": 1.1964241999667138,
+      "success": true
+    },
+    {
+      "stage": "6/ablation/GP02/inliers_only",
+      "seconds": 1.1781420998740941,
+      "success": true
+    },
+    {
+      "stage": "6/ablation/GP03/all_train",
+      "seconds": 1.9734066999517381,
+      "success": true
+    },
+    {
+      "stage": "6/ablation/GP03/inliers_only",
+      "seconds": 0.48432549997232854,
+      "success": true
+    },
+    {
+      "stage": "6/ablation/GP04/all_train",
+      "seconds": 2.2827053000219166,
+      "success": true
+    },
+    {
+      "stage": "6/ablation/GP04/inliers_only",
+      "seconds": 0.4412752001080662,
+      "success": true
+    },
+    {
+      "stage": "6/propensity ablation on validation",
+      "seconds": 13.28367600007914,
+      "success": true
+    },
+    {
+      "stage": "6/reproducibility/GP01/all_train",
+      "seconds": 4.315756600117311,
+      "success": true
+    },
+    {
+      "stage": "6/reproducibility/GP01/inliers_only",
+      "seconds": 1.0720124999061227,
+      "success": true
+    },
+    {
+      "stage": "6/reproducibility/GP02/all_train",
+      "seconds": 1.2521452000364661,
+      "success": true
+    },
+    {
+      "stage": "6/reproducibility/GP02/inliers_only",
+      "seconds": 1.1498426001053303,
+      "success": true
+    },
+    {
+      "stage": "6/reproducibility/GP03/all_train",
+      "seconds": 1.8654168997891247,
+      "success": true
+    },
+    {
+      "stage": "6/reproducibility/GP03/inliers_only",
+      "seconds": 0.4777353999670595,
+      "success": true
+    },
+    {
+      "stage": "6/reproducibility/GP04/all_train",
+      "seconds": 2.1704779001884162,
+      "success": true
+    },
+    {
+      "stage": "6/reproducibility/GP04/inliers_only",
+      "seconds": 0.4217918000649661,
+      "success": true
+    },
+    {
+      "stage": "11/reproduce steps 5\u20136 before opening TEST",
+      "seconds": 30.567122400039807,
+      "success": true
+    },
+    {
+      "stage": "7\u20138/GP01/confidence, thresholds and reason checks",
+      "seconds": 0.5722594000399113,
+      "success": true
+    },
+    {
+      "stage": "7\u20138/GP02/confidence, thresholds and reason checks",
+      "seconds": 0.676172899780795,
+      "success": true
+    },
+    {
+      "stage": "7\u20138/GP03/confidence, thresholds and reason checks",
+      "seconds": 0.22329230001196265,
+      "success": true
+    },
+    {
+      "stage": "7\u20138/GP04/confidence, thresholds and reason checks",
+      "seconds": 0.21139449998736382,
+      "success": true
+    },
+    {
+      "stage": "10/scenario tests before final TEST evaluation",
+      "seconds": 0.1922017999459058,
+      "success": true
+    },
+    {
+      "stage": "lock all selections",
+      "seconds": 0.0054969999473541975,
+      "success": true
+    },
+    {
+      "stage": "final TEST/GP01",
+      "seconds": 0.6816896998789161,
+      "success": true
+    },
+    {
+      "stage": "final TEST/GP02",
+      "seconds": 0.6901724999770522,
+      "success": true
+    },
+    {
+      "stage": "final TEST/GP03",
+      "seconds": 0.65960399992764,
+      "success": true
+    },
+    {
+      "stage": "final TEST/GP04",
+      "seconds": 0.6422455001156777,
+      "success": true
+    },
+    {
+      "stage": "final TEST evaluation; no selection beyond this point",
+      "seconds": 7.285939000081271,
+      "success": true
+    },
+    {
+      "stage": "9/prediction exports after exclusions",
+      "seconds": 1.0245434001553804,
+      "success": true
+    },
+    {
+      "stage": "12/summary and model inventory",
+      "seconds": 0.015863300068303943,
+      "success": true
+    }
+  ]
+}

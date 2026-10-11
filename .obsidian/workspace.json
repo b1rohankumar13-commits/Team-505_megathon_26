@@ -11,10 +11,14 @@
             "id": "ba038eed7df7dfe0",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "ml_layer_spec.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "ml_layer_spec"
             }
           }
         ]
@@ -95,6 +99,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "ml_layer_spec.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -113,6 +118,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "ml_layer_spec.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
@@ -155,6 +161,7 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "ml_layer_spec.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -183,27 +190,51 @@
   },
   "active": "ba038eed7df7dfe0",
   "lastOpenFiles": [
-    "src/ml/rules.py",
-    "src/ml/README.md",
-    "src/ml/propensity.py",
-    "src/ml/features.py",
-    "src/ml/config.py",
-    "src/ml/config-review.md",
-    "src/ml/cleaning.py",
-    "src/ml/categoriser.py",
-    "src/ml",
-    "ml_layer_spec.md",
-    "megathon-problem-statement-patterns.md",
-    "data-acquisition-plan.md",
-    "architecture-and-existing-solutions.md",
-    "ai_chat.md",
-    "src/routes/README.md",
-    "src/routes/__root.tsx",
-    "src/routes/index.tsx",
-    "src/routes/customer.$customerId.tsx",
-    "src/routes",
+    "node_modules/@babel/parser/typings/babel-parser.d.ts",
+    "node_modules/@babel/parser/typings",
+    "node_modules/@types/babel__generator/index.d.ts",
+    "node_modules/@types/babel__traverse/README.md",
+    "node_modules/@types/babel__traverse/LICENSE",
+    "node_modules/@types/babel__traverse/package.json",
+    "node_modules/@types/babel__traverse/index.d.ts",
+    "node_modules/@types/babel__traverse",
+    "node_modules/@types/babel__template/README.md",
+    "node_modules/@types/babel__template/LICENSE",
+    "node_modules/@types/babel__template/package.json",
+    "node_modules/@types/babel__template/index.d.ts",
+    "node_modules/@types/babel__template",
+    "node_modules/@types/babel__core/README.md",
+    "node_modules/buffer/README.md",
+    "node_modules/buffer/AUTHORS.md",
+    "node_modules/@types/d3-shape/README.md",
+    "node_modules/@types/d3-time/README.md",
+    "node_modules/@types/d3-scale/README.md",
+    "node_modules/@types/webxr/README.md",
+    "src/carbon/README.md",
+    "docs/LIVE_INTEGRATION.md",
+    "node_modules/redent/readme.md",
+    "node_modules/gopd/README.md",
+    "node_modules/gopd/CHANGELOG.md",
+    "node_modules/xml-name-validator/README.md",
+    "node_modules/safer-buffer/Readme.md",
+    "node_modules/safer-buffer/Porting-Buffer.md",
+    "node_modules/whatwg-encoding/README.md",
+    "node_modules/html-encoding-sniffer/README.md",
+    "node_modules/requires-port/README.md",
+    "node_modules/tinyrainbow/README.md",
+    "node_modules/js-tokens/README.md",
+    "node_modules/js-tokens/CHANGELOG.md",
+    "node_modules/picocolors/README.md",
+    "node_modules/vitefu/README.md",
+    "src/assets/emerald-forest.jpg",
+    "public/favicon.png",
+    "node_modules/date-fns/docs/logotype.svg",
+    "node_modules/date-fns/docs/logo.svg",
+    "node_modules/date-fns-jalali/docs/logotype.svg",
+    "node_modules/date-fns-jalali/docs/logo.svg",
+    "node_modules/psl/browserstack-logo.svg",
     "src/assets/green-hero-simple.jpg",
-    "VALIDATION.md",
-    "AGENTS.md"
+    "results/categoriser/test/rules/confusion.png",
+    "results/categoriser/test/ml_only/confusion.png"
   ]
 }

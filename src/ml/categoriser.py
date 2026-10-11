@@ -1,4 +1,4 @@
-# categoriser.py  (patched version of the DeepSeek file; changes tagged "# FIX:")
+﻿# categoriser.py  (patched version of the DeepSeek file; changes tagged "# FIX:")
 # Task 1: Transaction category classifier.
 # Rules for obvious merchants, then TF-IDF (char_wb 2-5) +
 # LogisticRegression vs calibrated LinearSVC; keep better by val macro-F1.
@@ -81,7 +81,7 @@ def predict_categories(model, texts, use_rules: bool = True, return_scores: bool
     FIX: this was missing. Inference = rules first (when a rule fires), ML for the rest.
     Returns category labels (and a score: 0.99 for rule hits, max class probability otherwise).
     """
-    norm = pd.Series(list(texts)).map(normalise_merchant).values
+    norm = pd.Series(list(texts)).map(normalise_merchant).to_numpy()
     labels = np.asarray(model.predict(norm), dtype=object)
     scores = model.predict_proba(norm).max(axis=1)
     if use_rules:
@@ -140,8 +140,8 @@ def train_categoriser(txns: pd.DataFrame, labels: pd.DataFrame, splits: dict = N
     tr = merged[merged["customer_id"].isin(set(splits["train"]))]
     va = merged[merged["customer_id"].isin(set(splits["val"]))]
 
-    X_tr, y_tr = tr["text"].values, tr["category"].values
-    X_va, y_va = va["text"].values, va["category"].values
+    X_tr, y_tr = tr["text"].to_numpy(), tr["category"].to_numpy()
+    X_va, y_va = va["text"].to_numpy(), va["category"].to_numpy()
 
     results, models = {}, {}
     for kind in ["logreg", "svc"]:
@@ -193,11 +193,11 @@ def oof_predict_categories(txns: pd.DataFrame, labels: pd.DataFrame, splits: dic
     pred = pd.Series(index=df.index, dtype=object)
     for k in range(n_folds):
         fit_rows = lab[lab_fold.notna() & (lab_fold != k)]
-        pipe = _build_pipeline(best_kind).fit(fit_rows["text"].values, fit_rows["category"].values)
-        m = (df_fold == k).values
+        pipe = _build_pipeline(best_kind).fit(fit_rows["text"].to_numpy(), fit_rows["category"].to_numpy())
+        m = (df_fold == k).to_numpy()
         if m.any():
             pred.loc[m] = predict_categories(pipe, df.loc[m, "merchant_description"], use_rules)
-    m = df_fold.isna().values  # val/test (and unseen) customers
+    m = df_fold.isna().to_numpy()  # val/test (and unseen) customers
     if m.any():
         pred.loc[m] = predict_categories(final_model, df.loc[m, "merchant_description"], use_rules)
     return pred
@@ -211,7 +211,7 @@ def evaluate_categoriser(model, val_df: pd.DataFrame, use_rules: bool = False) -
     val_df needs merchant_description + category (see labelled_frame). Pass use_rules=True to
     evaluate the hybrid."""
     df = val_df.copy()
-    y = df["category"].values
+    y = df["category"].to_numpy()
     pred = predict_categories(model, df["merchant_description"], use_rules=use_rules)
 
     macro_f1 = f1_score(y, pred, average="macro", zero_division=0)
@@ -249,4 +249,4 @@ def accuracy_on_unseen_merchants(model, val_df: pd.DataFrame,
     if unseen.empty:
         return float("nan")
     pred = predict_categories(model, unseen["merchant_description"], use_rules=use_rules)
-    return accuracy_score(unseen["category"].values, pred)
+    return accuracy_score(unseen["category"].to_numpy(), pred)
