@@ -22,3 +22,6 @@ Scenario input keys:
 Errors: non-2xx with `{"detail": "human readable message"}`.
 
 See LIVE_INTEGRATION.md for startup, data paths, integrity checks and current limitations.
+
+## Approved synthetic scenarios (v1)
+Recommended opportunities now contain generated `impact.scenarioSource` and `impact.scenarioInputs` when baselines support the checked engine. Impact assumptions record the synthetic ranges. No training CSV or prediction is altered. Portfolio energy includes home/grid-import savings only. Home has priority over solar per customer. `potential.digitalAdoption` is explicitly simulated paperless take-up among recommended GP04 customers; numerator/denominator accompany it. `measuredOutcomes` remains null. Ad-hoc scenario edits are unsaved and do not replace generated portfolio scenarios.

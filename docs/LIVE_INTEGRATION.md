@@ -18,9 +18,13 @@ Never expose local model paths or secrets as VITE variables.
   trusted artifacts. Changed customer data needs preprocessing and a compatible saved snapshot.
 - No handwritten scores, fictional frontend customers, fallback fixtures or decorative numbers.
 - The source dataset is still synthetic, as declared; model integration does not make it real banking data.
-- Carbon estimates require explicit customer scenario inputs. No invented EV efficiency, charging
-  loss, retrofit savings or solar generation. Aggregate carbon/energy/paper remain unavailable
-  without adopted, non-overlapping scenarios. Paper estimates use physical sheets.
+- Approved synthetic scenario inputs now populate recommended customers' impact cards and portfolio totals.
+  Ranges and provenance are shown on Methodology. They are hackathon assumptions, not measured plans.
+  Home has priority over solar for the same customer to avoid overlapping reductions.
+  Energy totals cover home/grid imports, not transport. Paper uses physical sheets.
+- Digital adoption is explicitly labelled simulated paperless take-up among recommended GP04 customers
+  over six months, sampled reproducibly from model probabilities. No measured outcomes are invented.
+- Ad-hoc what-if edits stay unsaved and do not replace generated overview scenarios.
 - Mileage is miles/year. Annual energy and statement totals require 12 complete months.
 - Regions, names, logins, historical trends and conversions absent in the source remain unavailable.
 - Explanations use evidence-derived templates, labelled in the UI. No LLM is configured.
