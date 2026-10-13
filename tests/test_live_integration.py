@@ -23,7 +23,10 @@ def test_real_cohort_and_predictions(api):
     assert sum(portfolio['statusCounts'].values()) == 4000
     assert portfolio['statusCounts']['recommended'] > 0
     assert portfolio['statusCounts']['below_threshold'] > 0
-    assert portfolio['potential']['co2eKg'] is None
+    assert portfolio['potential']['co2eKg'] > 0
+    assert portfolio['potential']['scenarioSource'] == 'synthetic-scenarios-v1'
+    assert 0 <= portfolio['potential']['digitalAdoption'] <= 1
+    assert portfolio['measuredOutcomes'] is None
     assert api.get('/customers/C10001').status_code == 404
     for cid, customer in s.customers.items():
         for opp in customer['opportunities']:
@@ -34,7 +37,11 @@ def test_real_cohort_and_predictions(api):
                 assert (opp['status'] == 'recommended') == (opp['propensity'] >= threshold)
             assert 0 <= opp['confidence'] <= 1
             assert opp['eligibility'] == {'assessed': False}
-            assert opp['impact']['annualDifference']['value'] is None
+            if opp['impact']['available']:
+                assert opp['status'] == 'recommended'
+                assert opp['impact']['scenarioSource'] == 'synthetic-scenarios-v1'
+            else:
+                assert opp['impact']['annualDifference']['value'] is None
         json.dumps(customer, allow_nan=False)
 
 
