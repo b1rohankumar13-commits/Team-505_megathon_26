@@ -18,6 +18,7 @@ from explain import REASON_CODES, tree_shap_values
 from predict import predict_frame
 from src.carbon import calculate_impact
 from src.carbon.engine import PRODUCT_FIELDS
+from .synthetic_impacts import VERSION, NOTICE, scenario_inputs, ui_inputs, aggregate
 
 PRODUCTS = dict(cfg.PRODUCTS, GP04='Paperless Banking')
 STATES = ('recommended', 'ruled_out', 'below_threshold', 'insufficient_data')
@@ -72,6 +73,7 @@ class ModelService:
         self.groups = {name: {str(cid): group for cid, group in t.groupby('customer_id')} for name, t in self.tables.items()}
         self.now = datetime.now(timezone.utc).isoformat()
         self.customers = {cid: self._customer(cid) for cid in self.frame.index}
+        self.apply_synthetic_impacts()
 
     def group(self, table, cid): return self.groups[table].get(cid, self.tables[table].iloc[:0])
 
@@ -122,13 +124,41 @@ class ModelService:
     def list_customers(self):
         return [{**{k: c[k] for k in ['id', 'name', 'region', 'segment']}, 'products': [{k: o[k] for k in ['productId', 'status', 'propensity', 'confidence']} for o in c['opportunities']]} for c in self.customers.values()]
 
+    def apply_synthetic_impacts(self):
+        for customer in self.customers.values():
+            for opp in customer['opportunities']:
+                if opp['status'] != 'recommended': continue
+                inputs = scenario_inputs(customer, opp['productId'])
+                if inputs is None: continue
+                result = calculate_impact(opp['productId'], inputs)
+                if result['status'] not in ('available', 'partial'):
+                    raise ValueError('Invalid generated scenario: ' + str(result))
+                view = impact_view(result)
+                metrics = result['metrics']
+                energy = [m['value'] for m in metrics if m['name'] in ('electricity_reduction', 'gas_reduction', 'grid_import_reduction')]
+                view['energyKwhSaved'] = sum(energy) if energy else None
+                view['scenarioSource'] = VERSION
+                view['scenarioInputs'] = ui_inputs(inputs)
+                view['label'] = 'Synthetic scenario estimate: ' + result['message']
+                opp['impact'] = view
+                value, unit = view['annualDifference']['value'], view['annualDifference']['unit']
+                opp['explanation']['text'] = opp['explanation']['text'].replace('Potential impact needs explicit scenario inputs.', f'Synthetic scenario potential: {value:,.2f} {unit}; not measured savings.')
+
     def portfolio(self):
         ops = [o for c in self.customers.values() for o in c['opportunities']]
         counts = lambda rows: {s: sum(o['status'] == s for o in rows) for s in STATES}
-        return {'dataCutoff': cfg.CUTOFF_DATE, 'lastRefreshed': self.now, 'customers': len(self.customers), 'statusCounts': counts(ops), 'potential': {'co2eKg': None, 'energyKwh': None, 'paperSheets': None, 'digitalAdoption': None, 'dedupNote': 'No portfolio impact assumed. Customer what-if estimates are separate, unsaved scenarios and are not summed. Digital activity is not measured adoption.'}, 'impactCoverage': {'calculable': 0, 'total': len(ops)}, 'measuredOutcomes': None, 'products': [{'productId': pid, 'name': PRODUCTS[pid], 'counts': counts([o for o in ops if o['productId'] == pid]), 'co2eKg': None} for pid in PRODUCTS]}
+        totals = aggregate(self.customers)
+        potential = {k: totals[k] for k in ['co2eKg','energyKwh','paperSheets','digitalAdoption','digitalAdoptionNumerator','digitalAdoptionDenominator']}
+        potential['scenarioSource'] = VERSION
+        potential['dedupNote'] = (NOTICE + '. Conditional annual savings assume adoption of recommended scenarios; not propensity-weighted. '
+            'Home takes priority over solar for the same customer, so their savings are never added. Energy shows home/grid-import reductions only, excluding transport. '
+            'Simulated paperless take-up is a separate six-month Bernoulli simulation using GP04 probabilities among recommended customers; it is not an observed conversion rate and does not weight impact totals.')
+        return {'dataCutoff': cfg.CUTOFF_DATE, 'lastRefreshed': self.now, 'customers': len(self.customers),
+            'statusCounts': counts(ops), 'potential': potential, 'impactCoverage': totals['coverage'], 'measuredOutcomes': None,
+            'products': [{'productId': pid, 'name': PRODUCTS[pid], 'counts': counts([o for o in ops if o['productId'] == pid]), 'co2eKg': totals['co2ByProduct'][pid]} for pid in PRODUCTS]}
 
     def insights(self):
-        rows = [{'customerId': c['id'], 'customerName': c['name'], 'region': c['region'], **{k: o[k] for k in ['productId', 'status', 'propensity', 'confidence']}, 'impactAvailable': False} for c in self.customers.values() for o in c['opportunities']]
+        rows = [{'customerId': c['id'], 'customerName': c['name'], 'region': c['region'], **{k: o[k] for k in ['productId', 'status', 'propensity', 'confidence']}, 'impactAvailable': o['impact']['available']} for c in self.customers.values() for o in c['opportunities']]
         segments = []
         for name in sorted({c['segment'] for c in self.customers.values()}):
             cs = [c for c in self.customers.values() if c['segment'] == name]
@@ -156,4 +186,4 @@ class ModelService:
             for variant, models in variants.items():
                 for key in ['pr_auc', 'roc_auc', 'brier']:
                     metrics.append({'name': f'{pid} {variant} XGBoost {key}', 'value': str(round(models['xgb'][key], 4)), 'baseline': str(round(models['logreg'][key], 4))})
-        return {'sections': [section('data', 'Data and provenance', ['Supplied frozen models and hash-matched synthetic CSV cohort; no real banking records.', 'Cutoff: ' + cfg.CUTOFF_DATE + '; outcome ends: ' + cfg.LABEL_WINDOW_END_DATE, 'Customer-level 70/15/15 split. Dashboard includes training, validation and test customers; it is not an independent evaluation.', 'No invented customer names or inferred regions. Missing physical scenario inputs remain unavailable.']), section('models', 'Models and confidence', ['TF-IDF transaction categoriser; calibrated XGBoost models and saved validation thresholds.', 'Confidence is the validated heuristic D cubed times S, distinct from propensity.', 'SHAP explains raw model margin, not probability points or causation.']), section('carbon', 'Deterministic carbon engine', ['UK government 2026 factors: direct fuel combustion, grid generation and grid losses.', 'Explicit annual what-if inputs only; no lifecycle or financed-emissions claim. Paper uses sheets.', 'Scenarios do not change recommendations or contribute to portfolio totals.']), section('llm', 'Explanations', ['Evidence-based templates only; no LLM connected.']), section('evaluation', 'Saved validation report', self.summary['limitations'], metrics), section('responsible', 'Responsible use', ['Synthetic data only. No eligibility assessment or real banking actions.', 'Model scores do not prove savings or approval. External validation is still needed.'])]}
+        return {'sections': [section('data', 'Data and provenance', ['Supplied frozen models and hash-matched synthetic CSV cohort; no real banking records.', 'Cutoff: ' + cfg.CUTOFF_DATE + '; outcome ends: ' + cfg.LABEL_WINDOW_END_DATE, 'Customer-level 70/15/15 split. Dashboard includes training, validation and test customers; it is not an independent evaluation.', 'No invented customer names or inferred regions. Approved synthetic scenario assumptions fill missing planned-use parameters. Unsupported baselines remain unavailable.']), section('models', 'Models and confidence', ['TF-IDF transaction categoriser; calibrated XGBoost models and saved validation thresholds.', 'Confidence is the validated heuristic D cubed times S, distinct from propensity.', 'SHAP explains raw model margin, not probability points or causation.']), section('carbon', 'Deterministic carbon engine', ['UK government 2026 factors: direct fuel combustion, grid generation and grid losses.', 'Versioned synthetic scenario inputs plus UK 2026 factors. No lifecycle or financed-emissions claim. Paper uses sheets.', 'Generated recommended scenarios contribute to portfolio totals. Home has priority over solar to avoid overlap. Ad-hoc what-if edits remain unsaved and do not change recommendations or totals.']), section('synthetic', 'Synthetic scenario assumptions', [NOTICE, 'EV: battery efficiency 0.15–0.22 kWh/km; charging efficiency 0.85–0.95.', 'Home: electricity reduction 5–15%; gas reduction 10–30%; gross gas basis assumed.', 'Solar: 2500–4500 kWh/year; self-consumption 40–70%, capped at annual imports. Roof suitability assumed.', 'Paper: 1–3 physical sheets/statement; complete switching for conditional impact.', 'Stable SHA-256 draws keyed by customer, parameter and version. Engineering ranges are design assumptions, not research findings.', 'Six-month simulated paperless take-up: independent deterministic Bernoulli draws using model probabilities, recommended GP04 customers only. Not measured outcomes or evaluation labels.']), section('llm', 'Explanations', ['Evidence-based templates only; no LLM connected.']), section('evaluation', 'Saved validation report', self.summary['limitations'], metrics), section('responsible', 'Responsible use', ['Synthetic data only. No eligibility assessment or real banking actions.', 'Model scores do not prove savings or approval. External validation is still needed.'])]}
