@@ -7,9 +7,9 @@ import { fmtNum, fmtPct } from "@/lib/format";
 export function EditorialHero({ co2eKg, digitalAdoption }: { co2eKg: number | null; digitalAdoption: number | null }) {
   const metrics = [
     { value: "Model-led", label: "Customer Propensity" },
-    { value: co2eKg === null ? "Unavailable" : fmtNum(co2eKg / 1000, "t CO₂e", 1), label: "Avoided Emissions", note: "Potential · per year" },
+    { value: co2eKg === null ? "Unavailable" : fmtNum(co2eKg / 1000, "t CO₂e", 1), label: "Avoided Emissions", note: "Synthetic potential · per year" },
     { value: "Evidence-led", label: "Reason Codes" },
-    { value: fmtPct(digitalAdoption), label: "Digital Adoption" },
+    { value: fmtPct(digitalAdoption), label: "Simulated Paperless Take-up" },
   ];
   return (
     <section className="editorial-hero" aria-label="Green Customer Insights Platform">

@@ -22,3 +22,13 @@ describe('Live-only API client', () => {
     expect(await getPortfolio()).toEqual({source:'live', data:payload});
   });
 });
+
+describe('Compose API routing', () => {
+  it.each([true, false])('selects the correct URL for SSR=%s', async (ssr) => {
+    vi.stubEnv('SSR', ssr);
+    vi.stubEnv('VITE_GREEN_API_URL', 'http://localhost:8002');
+    vi.stubEnv('VITE_GREEN_SSR_API_URL', 'http://backend:8000');
+    const { API_BASE_URL } = await import('@/lib/api/client');
+    expect(API_BASE_URL).toBe(ssr ? 'http://backend:8000' : 'http://localhost:8002');
+  });
+});

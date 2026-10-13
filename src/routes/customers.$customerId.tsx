@@ -73,6 +73,8 @@ function Disclosure({ label, open, onToggle, children }: { label: string; open: 
 }
 
 function prefillFor(c: Customer, pid: ProductId): Record<string, string> {
+  const saved = c.opportunities.find((o) => o.productId === pid)?.impact.scenarioInputs;
+  if (saved) return saved;
   const s = (n: number | null | undefined) => (n === null || n === undefined ? "" : String(n));
   if (pid === "GP01") {
     const fuel = c.vehicle?.fuel?.toLowerCase() ?? "";
@@ -222,7 +224,7 @@ function OpportunityCard({ opp, customer }: { opp: Opportunity; customer: Custom
           <Button type="button" variant="outline" size="sm" onClick={() => setScenario((v) => !v)} aria-expanded={scenario}>
             {scenario ? "Hide" : "Open"} “What if?” panel
           </Button>
-          {scenario && <ScenarioPanel customerId={customer.id} productId={opp.productId} prefill={prefillFor(customer, opp.productId)} />}
+          {scenario && <ScenarioPanel customerId={customer.id} productId={opp.productId} prefill={prefillFor(customer, opp.productId)} synthetic={!!opp.impact.scenarioSource} />}
         </Disclosure>
       )}
 

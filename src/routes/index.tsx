@@ -96,6 +96,7 @@ function Overview() {
       <EditorialHero co2eKg={p.potential.co2eKg} digitalAdoption={p.potential.digitalAdoption} />
 
       <main className="mx-auto max-w-6xl space-y-8 px-6 py-8">
+        <div role="status" className="rounded-lg border border-warning bg-warning/10 p-4 text-sm"><strong>Synthetic scenario estimates.</strong> Missing planned-use parameters are generated for this hackathon. These are calculated potential savings, not measured customer results. See Methodology for assumptions.</div>
         <p className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
           <span>Data cutoff: {fmtDate(p.dataCutoff)}</span>
           <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> Last refreshed: {fmtDateTime(p.lastRefreshed)}</span>
@@ -105,15 +106,15 @@ function Overview() {
             <p className="text-xs font-semibold uppercase tracking-widest text-primary">Potential savings if adopted</p>
             <h2 className="mt-1 text-2xl font-bold">Small changes. Meaningful impact.</h2>
           </div>
-          <span className="text-xs text-muted-foreground">Annual estimates · not measured outcomes</span>
+          <span className="text-xs text-muted-foreground">Synthetic scenarios · annual estimates · not measured outcomes</span>
         </div>
 
         <section className="grid grid-cols-2 gap-4 lg:grid-cols-5">
           <Kpi icon={Users} label="Customers" value={fmtNum(p.customers)} sub="in current portfolio" />
           <Kpi icon={Leaf} label="Potential CO₂e" value={p.potential.co2eKg === null ? "Unavailable" : `${fmtNum(p.potential.co2eKg / 1000, "t", 1)}`} sub="per year · estimate" />
-          <Kpi icon={Zap} label="Potential energy" value={fmtNum(p.potential.energyKwh, "kWh")} sub="per year · estimate" />
+          <Kpi icon={Zap} label="Home/grid energy savings" value={fmtNum(p.potential.energyKwh, "kWh")} sub="per year · estimate" />
           <Kpi icon={FileText} label="Paper avoided" value={fmtNum(p.potential.paperSheets, "sheets")} sub="per year · not converted to CO₂e" />
-          <Kpi icon={Smartphone} label="Digital adoption" value={fmtPct(p.potential.digitalAdoption)} sub="not a carbon metric" />
+          <Kpi icon={Smartphone} label="Simulated paperless take-up" value={fmtPct(p.potential.digitalAdoption)} sub={`${p.potential.digitalAdoptionNumerator ?? 0}/${p.potential.digitalAdoptionDenominator ?? 0} recommended · simulated over 6 months`} />
         </section>
         <p className="text-xs text-muted-foreground">{p.potential.dedupNote}</p>
 
@@ -127,7 +128,7 @@ function Overview() {
           <div className="rounded-lg border bg-card p-4">
             <p className="flex items-center gap-1 text-[11px] uppercase tracking-wide text-muted-foreground"><Gauge className="h-3 w-3" /> Impact coverage</p>
             <p className="mt-1 text-2xl font-bold tabular-nums">{p.impactCoverage.calculable}/{p.impactCoverage.total}</p>
-            <p className="text-[11px] text-muted-foreground">all product assessments with calculable impact</p>
+            <p className="text-[11px] text-muted-foreground">recommended products with calculable impact</p>
           </div>
         </section>
 

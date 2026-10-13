@@ -77,6 +77,8 @@ export interface ImpactSide {
 }
 
 export interface ImpactDetail {
+  scenarioSource?: string;
+  scenarioInputs?: Record<string, string>;
   available: boolean;
   /** Positive = reduction; negative = estimated increase. */
   annualDifference: Quantity;
@@ -193,6 +195,9 @@ export interface Portfolio {
     paperSheets: number | null;
     digitalAdoption: number | null;
     dedupNote: string;
+    scenarioSource?: string;
+    digitalAdoptionNumerator?: number;
+    digitalAdoptionDenominator?: number;
   };
   impactCoverage: { calculable: number; total: number };
   measuredOutcomes: null | { adopted: number; measuredCo2eKg: number | null };

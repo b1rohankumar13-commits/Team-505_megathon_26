@@ -14,7 +14,9 @@ import type {
 } from "./types";
 
 export const API_BASE_URL: string | null =
-  ((import.meta.env["VITE_GREEN_API_URL"] as string | undefined) ?? "").replace(/\/$/, "") || null;
+  ((import.meta.env.SSR
+    ? import.meta.env["VITE_GREEN_SSR_API_URL"] || import.meta.env["VITE_GREEN_API_URL"]
+    : import.meta.env["VITE_GREEN_API_URL"]) ?? "").replace(/\/$/, "") || null;
 export const API_MODE = "live" as const;
 
 export class ApiError extends Error {

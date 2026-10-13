@@ -54,7 +54,7 @@ function validate(pid: ProductId, v: Record<string, string>) {
   return errs;
 }
 
-export function ScenarioPanel({ customerId, productId, prefill }: { customerId: string; productId: ProductId; prefill: Record<string, string> }) {
+export function ScenarioPanel({ customerId, productId, prefill, synthetic = false }: { customerId: string; productId: ProductId; prefill: Record<string, string>; synthetic?: boolean }) {
   const [values, setValues] = useState<Record<string, string>>(prefill);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const m = useMutation({
@@ -75,7 +75,7 @@ export function ScenarioPanel({ customerId, productId, prefill }: { customerId: 
       <div>
         <p className="flex items-center gap-1.5 text-sm font-semibold"><Calculator className="h-4 w-4" /> What if?</p>
         <p className="text-[11px] text-muted-foreground">
-          Inputs are sent to the deterministic backend carbon engine. Pre-filled values come from this customer's recorded data only; empty fields have no assumed default. Scenarios never change a product's status or eligibility.
+          {synthetic ? 'Prefilled scenario parameters are synthetic assumptions; baseline quantities come from the supplied dataset. Review them before calculation.' : 'Prefilled baseline values come from the customer dataset; empty fields have no assumed value.'} Calculations use the backend carbon engine. Edits are unsaved what-if scenarios and do not change portfolio totals, recommendation status or eligibility.
         </p>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
