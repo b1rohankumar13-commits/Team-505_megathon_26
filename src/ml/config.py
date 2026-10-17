@@ -18,7 +18,7 @@ DATA_DIR = Path(_data_override).expanduser() if _data_override else REPO_ROOT / 
 if not DATA_DIR.is_absolute():
     DATA_DIR = REPO_ROOT / DATA_DIR
 DATA_DIR = DATA_DIR.resolve()
-ARTIFACT_DIR = REPO_ROOT / "artifacts"
+ARTIFACT_DIR = Path(os.environ.get("GREEN_INSIGHTS_ARTIFACT_DIR", REPO_ROOT / "artifacts")).expanduser().resolve()
 RESULTS_DIR = REPO_ROOT / "results"
 # Kept for compatibility: current trainers call joblib.dump without mkdir.
 ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)

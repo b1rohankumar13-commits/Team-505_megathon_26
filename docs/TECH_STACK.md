@@ -1,8 +1,7 @@
 # Technology stack and purpose
 
-Integration snapshot: 16 October 2026. The integrated application is developed
-on `ui_testing`; this documentation update does not merge its implementation into
-`main`. Some integration changes are still uncommitted in the Desktop checkout.
+Integration snapshot: 17 October 2026. The integrated application from
+`ui_testing` is now merged into `main`.
 
 | Technology | Purpose |
 |---|---|
@@ -31,10 +30,10 @@ scenario assumptions are labelled. Synthetic model evaluation is not evidence of
 real banking performance. Streamlit is a retained earlier prototype, not the
 current frontend.
 
-Gemini is implemented with a bounded one-hour memory cache and labelled template
-fallback. The last live smoke test returned HTTP 503; successful generation and
-full end-to-end validation remain pending. The local launcher does not currently
-load `.env` automatically. No secrets or datasets are included in these documents.
+Gemini uses a bounded one-hour memory cache and labelled template fallback.
+Live generation with `gemini-3.5-flash-lite` and browser integration were
+verified on 16 October. The backend loads supported Gemini settings from
+the root `.env` at startup. No secrets or datasets are included here.
 
 ## Documentation map
 

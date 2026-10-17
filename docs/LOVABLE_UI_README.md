@@ -1,5 +1,3 @@
-> Branch scope: this document describes the integrated application developed on ui_testing. This documentation-only addition to main does not merge that application code. Historical setup instructions may require files from ui_testing.
-
 # Welcome to your Lovable project
 
 This project was built with [Lovable](https://lovable.dev).

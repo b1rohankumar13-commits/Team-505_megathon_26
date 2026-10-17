@@ -1,5 +1,3 @@
-> Branch scope: this document describes the integrated application developed on ui_testing. This documentation-only addition to main does not merge that application code. Historical setup instructions may require files from ui_testing.
-
 # Green Insights â€” FastAPI contract
 
 Frontend reads `VITE_GREEN_API_URL` (e.g. `https://api.example.com`). Unset = explicit configuration error; no fixtures are used.

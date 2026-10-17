@@ -1,5 +1,3 @@
-> Branch scope: this document describes the integrated application developed on ui_testing. This documentation-only addition to main does not merge that application code. Historical setup instructions may require files from ui_testing.
-
 # Live model integration
 
 Run `powershell -ExecutionPolicy Bypass -File .\start-live.ps1` from this checkout.
@@ -29,7 +27,7 @@ Never expose local model paths or secrets as VITE variables.
 - Ad-hoc what-if edits stay unsaved and do not replace generated overview scenarios.
 - Mileage is miles/year. Annual energy and statement totals require 12 complete months.
 - Regions, names, logins, historical trends and conversions absent in the source remain unavailable.
-- Customer explanations support Gemini with labelled template fallback; live generation remains unverified after an HTTP 503 response.
+- Customer explanations use Gemini when configured and available, with explicitly labelled template fallback.
 - Existing Streamlit prototype files are retained for reference; its old API contract is not served
   by the new backend. Launch the React UI with the command above.
 - Data/artifacts remain outside Git; only source, tests and saved evaluation metadata are added.
@@ -40,7 +38,7 @@ Verification: `python -m pytest tests/test_live_integration.py` with the configu
 ## Gemini explanations
 
 Set `GEMINI_API_KEY` in the ignored root `.env`. Optional `GEMINI_MODEL`
-(default `gemini-3.8-flash`) and `GEMINI_ENABLED=false` disable switch. Compose
+(default `gemini-3.5-flash-lite`) and `GEMINI_ENABLED=false` disable switch. Compose
 passes the key only to the backend, never as a frontend build argument. Rebuild:
 
 ```powershell
@@ -63,4 +61,17 @@ Ad-hoc scenarios do not rewrite cached baseline explanations.
 authentication/quota/model issues. Do not print `docker compose config` without
 `--quiet`, since resolved environment values include secrets.
 
-Local launcher note: start-live.ps1/run_integrated.py currently inherit environment variables and load .runtime/local.json; they do not automatically load the root .env file. GEMINI_API_KEY must be present in the backend process environment for non-Docker use.
+
+## Local Gemini startup (16 October 2026)
+
+The backend now loads GEMINI_API_KEY, GEMINI_MODEL and GEMINI_ENABLED from
+the root .env at startup, without overriding existing process variables. Quoted
+values and comments are supported; interpolation and multiline values are not.
+The frontend child process is stripped of GEMINI_ environment variables.
+Restart the backend after editing .env; an already-running API is reused by the
+launcher, so stop the old launcher first. Never use VITE_ for a secret.
+
+Run start-live.ps1; then use /health on port 8001 to check llm.configured. Open
+a customer page to trigger generation. Only lastResult=success and source=llm
+confirm generation. Provider failures keep labelled templates and do not change
+ML or carbon outputs. No Docker change is required for this local workflow.

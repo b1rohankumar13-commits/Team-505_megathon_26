@@ -1,5 +1,3 @@
-> Branch scope: this document describes the integrated application developed on ui_testing. This documentation-only addition to main does not merge that application code. Historical setup instructions may require files from ui_testing.
-
 # Run frontend and backend together
 
 Start Docker Desktop with Linux containers. From this repository:
@@ -25,11 +23,13 @@ docker compose --env-file .env.compose.local down
 
 Models and data are mounted read-only, excluded from build context and images.
 The supplied model lock and training input hashes must match. Existing synthetic
-scenario labels are preserved. Gemini integration is implemented with template fallback; a successful live provider response is still unverified.
+scenario labels are preserved. Gemini explanations are integrated; the selected model is gemini-3.5-flash-lite. Live local generation is verified, and template fallback remains available.
 
 The UI uses a Node server build. Browser requests use localhost:8002; server
 rendering uses backend:8000 within Compose. These URLs are built into the UI;
 rebuild after changing ports. This configuration is for local use, with published
 ports bound to loopback. Ports 8081/8002 avoid the native app on 8080/8001.
 
-With settings in root .env, use docker compose up --build -d. With --env-file .env.compose.local, that file must include GEMINI_API_KEY too (or the key must be in the shell environment). Never commit either environment file.
+With settings in root `.env`, use `docker compose up --build -d`. With
+`--env-file .env.compose.local`, that file must include `GEMINI_API_KEY` too
+(or the key must be in the shell environment). Never commit either environment file.

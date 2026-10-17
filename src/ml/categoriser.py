@@ -250,4 +250,3 @@ def accuracy_on_unseen_merchants(model, val_df: pd.DataFrame,
         return float("nan")
     pred = predict_categories(model, unseen["merchant_description"], use_rules=use_rules)
     return accuracy_score(unseen["category"].to_numpy(), pred)
-
