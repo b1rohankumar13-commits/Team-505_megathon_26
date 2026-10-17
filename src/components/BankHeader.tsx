@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { BarChart3, BookOpen, LayoutDashboard, Leaf, Menu, ShieldCheck, Users } from "lucide-react";
+import { BarChart3, BookOpen, LayoutDashboard, Leaf, Menu, Users } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -17,12 +17,6 @@ export function BankHeader() {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <div className="bg-bank-ink text-bank-on-ink">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-2 text-[11px]">
-          <span>Megathon prototype · not a bank service</span>
-          <span className="flex items-center gap-1.5"><ShieldCheck className="h-3 w-3" /> Synthetic data only</span>
-        </div>
-      </div>
       <header className="nav-shell">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3">
           <Link to="/" className="group flex items-center gap-3.5" aria-label="Green Insights overview">
