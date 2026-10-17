@@ -1,0 +1,44 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "127.0.0.1:${API_PORT:-8002}:8000"
+    environment:
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.5-flash-lite}
+      GEMINI_ENABLED: ${GEMINI_ENABLED:-true}
+      GREEN_INSIGHTS_ARTIFACT_DIR: /models
+      GREEN_INSIGHTS_DATA_DIR: /data
+      GREEN_UI_ORIGINS: "http://localhost:${UI_PORT:-8081},http://127.0.0.1:${UI_PORT:-8081}"
+    volumes:
+      - type: bind
+        source: ${MODEL_ARTIFACTS_DIR:?Set MODEL_ARTIFACTS_DIR in .env.compose.local}
+        target: /models
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ${MODEL_DATA_DIR:?Set MODEL_DATA_DIR in .env.compose.local}
+        target: /data
+        read_only: true
+        bind:
+          create_host_path: false
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=10)"]
+      interval: 15s
+      timeout: 12s
+      start_period: 120s
+      retries: 12
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      args:
+        VITE_GREEN_API_URL: "http://localhost:${API_PORT:-8002}"
+    ports:
+      - "127.0.0.1:${UI_PORT:-8081}:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
