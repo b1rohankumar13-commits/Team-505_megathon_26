@@ -36,7 +36,8 @@ try:
         else: raise RuntimeError('Models did not become ready in 180 seconds')
     npm = shutil.which('npm.cmd' if os.name == 'nt' else 'npm')
     if not npm: raise RuntimeError('Install Node.js/npm first')
-    processes.append(subprocess.Popen([npm, 'run', 'dev', '--', '--port', '8080', '--strictPort'], cwd=root))
+    frontend_env = {k: v for k, v in os.environ.items() if not k.startswith('GEMINI_')}
+    processes.append(subprocess.Popen([npm, 'run', 'dev', '--', '--port', '8080', '--strictPort'], cwd=root, env=frontend_env))
     print('UI: http://localhost:8080  API: ' + base + '/docs', flush=True)
     while all(p.poll() is None for p in processes): time.sleep(.5)
 finally:
