@@ -3,6 +3,21 @@
 Green Customer Insights prototype: React dashboard, FastAPI, ML propensity models,
 deterministic carbon estimates, and Gemini explanations with template fallback.
 
+## Work completed
+
+- **Data:** Prepared 1,000 synthetic customers, 84,112 transactions, and supporting energy, vehicle, product and digital records.
+- **Preprocessing:** Cleaned data, flagged outliers using RANSAC, and created customer features.
+- **Transaction classification:** Used character TF-IDF with Logistic Regression to categorise spending.
+- **Propensity:** Trained four calibrated XGBoost models to predict green-product adoption.
+- **Evaluation:** Used customer-level train/validation/test splits, PR-AUC, AUROC and Brier scores.
+- **Recommendations:** Combined predictions with rules excluding existing products and unsuitable options.
+- **Explainability:** Added SHAP feature contributions and confidence indicators.
+- **Carbon engine:** Calculated estimated savings using documented factors and labelled scenario assumptions.
+- **Gemini:** Integrated explanations grounded in model outputs, with caching and template fallback.
+- **Application:** Connected the React dashboard to FastAPI and removed placeholder outputs.
+- **Validation:** Passed 49 backend tests, 6 frontend tests, TypeScript checks and the production build.
+This is a proof of concept validated on synthetic customer data; real-world banking performance has not been established.
+
 ## Run locally
 
 Install the frontend and Python dependencies, configure the external data/model
