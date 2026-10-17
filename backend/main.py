@@ -3,6 +3,8 @@ import logging
 import os
 import json
 from pathlib import Path
+from .llm import Explainer
+from .local_env import load_gemini_env
 
 _settings = Path(__file__).resolve().parents[1] / ".runtime" / "local.json"
 if _settings.exists():
@@ -16,6 +18,8 @@ from pydantic import BaseModel, ConfigDict
 
 @asynccontextmanager
 async def lifespan(app):
+    load_gemini_env()
+    app.state.explainer = Explainer()
     app.state.service = None
     app.state.failure = None
     try:
@@ -36,7 +40,7 @@ def service():
 @app.get('/health')
 def health():
     s = service()
-    return {'status': 'ok', 'mode': 'model_inference', 'customers': len(s.customers), 'data': 'synthetic cohort', 'llm': 'not_connected'}
+    return {'status': 'ok', 'mode': 'model_inference', 'customers': len(s.customers), 'data': 'synthetic cohort', 'llm': app.state.explainer.status()}
 
 @app.get('/portfolio')
 def portfolio(): return service().portfolio()
@@ -46,7 +50,7 @@ def customers(): return service().list_customers()
 def customer(cid: str):
     s = service()
     if cid not in s.customers: raise HTTPException(404, 'Customer not found')
-    return s.customers[cid]
+    return app.state.explainer.enrich(s.customers[cid])
 @app.get('/insights')
 def insights(): return service().insights()
 @app.get('/methodology')
