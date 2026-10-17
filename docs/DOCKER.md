@@ -23,7 +23,7 @@ docker compose --env-file .env.compose.local down
 
 Models and data are mounted read-only, excluded from build context and images.
 The supplied model lock and training input hashes must match. Existing synthetic
-scenario labels are preserved. LLM integration is still not connected.
+scenario labels are preserved. Gemini explanations are integrated; the selected model is gemini-3.5-flash-lite. Live local generation is verified, and template fallback remains available.
 
 The UI uses a Node server build. Browser requests use localhost:8002; server
 rendering uses backend:8000 within Compose. These URLs are built into the UI;
