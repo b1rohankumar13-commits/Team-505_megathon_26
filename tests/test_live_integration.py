@@ -8,10 +8,12 @@ from backend.main import app
 
 @pytest.fixture(scope='module')
 def api():
-    with TestClient(app) as client:
-        r = client.get('/health')
-        assert r.status_code == 200, r.text
-        yield client
+    with pytest.MonkeyPatch.context() as env:
+        env.setenv('GEMINI_ENABLED', 'false')
+        with TestClient(app) as client:
+            r = client.get('/health')
+            assert r.status_code == 200, r.text
+            yield client
 
 
 def test_real_cohort_and_predictions(api):
